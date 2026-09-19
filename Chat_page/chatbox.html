@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document Title</title>
+    <link rel="stylesheet" href="chatbox.css">
+</head>
+<body>
+    <main> 
+        <nav id="navbar">
+            <h2 id="logo">
+                OFFLINE
+            </h2>
+             <li><a href="" id="home-chat">Home</a></li>
+            <ul>
+              <li><p>Welcome</p></li>
+              <li><p id="username"></p></li>
+              <li><a href="/login_account/login-account.html">Log out</a></li>
+            </ul>
+        </nav>
+        <div class="outer-container">
+            <div class="inner-container">
+                <div class ="top-header">
+                    <div class ="name">
+                        Tim
+                    </div>
+                    <div class = "name" id = "status">
+                        Offline
+                    </div>
+                    <div class="name">
+                        Aaron
+                    </div>
+                </div> 
+                <div id = "message-wrapper">
+            </div>
+
+            <div id ="message-wrapper-container">
+                <div id="left-input-wrapper">    
+                 <input
+                        type="text"
+                        id="left-message"
+                        class="input"
+                        placeholder="Key in your desired chat"
+                    >
+                    <button class="button" id="left-send">Left Side Send</button>
+                </div>
+
+                <div id="clear-button-wrapper">
+                    <button class="button" id="clear">clear Messages</button>
+                </div>
+                
+                <div id="right-input-wrapper">    
+                 <input
+                        type="text"
+                        id="right-message"
+                        class="input"
+                        placeholder="Key in your desired chat"
+                    >
+                    <button class="button" id="right-send">Right side Send</button>
+                </div>
+
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Link external JavaScript file here -->
+    <script src="chatbox.js"></script>
+</body>
+</html>

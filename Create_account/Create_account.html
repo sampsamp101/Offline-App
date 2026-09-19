@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="Create_account.css">
+</head>
+
+<body>
+    <header>
+        <nav id="navbar">
+            <h2 id="logo">
+                <a href="/index.html">OFFLINE</a>
+            </h2>
+            <ul>
+                <li><a href="/login_account/login-account.html">Login</a></li>
+            </ul>   
+        </nav>
+    </header>    
+
+    <div class="login-container">
+        <div id="login-Account">
+            <h2>Welcome</h2>
+            <p id="info">Sign up to continue</p>
+        </div>       
+        <label for="email">
+            Email 
+            <input id="email" type="email" placeholder="Enter Email Address..."/>
+        </label>
+        <label for="user">
+            UserName
+            <input id="user" type="text" placeholder="Enter New User..."/>
+        </label>
+        <label for="password">
+            Password Abcdef1!
+            <span id="password-eye-container">
+                <input id="password" type="password" placeholder="Password" />
+                <i class="fa-solid fa-eye" id="reveal-pw"></i>
+            </span>
+        </label>
+        <label for="confirm-password">
+            Confirm Password
+            <span id="conf irm-password-eye-container">
+                <input id="confirm-password" type="password" placeholder="Confirm Password" />
+                <i class="fa-solid fa-eye" id="reveal-confirm-pw"></i>
+            </span>
+        </label>
+        <button id="login">Create Account</button>
+        <button id="clearUsers">Clear local storage</button>
+    </div>
+
+    <footer>
+            <h3>© 2026 Offline</h3>
+            <div class="social-icons">
+                <a href="https://facebook.com/yourpage" target="_blank" rel="noopener" aria-label="Facebook">
+                    <i class="fa-brands fa-facebook"></i>
+                </a>
+                <a href="https://twitter.com/yourhandle" target="_blank" rel="noopener" aria-label="Twitter">
+                    <i class="fa-brands fa-x-twitter"></i>
+                </a>
+                <a href="https://instagram.com/yourhandle" target="_blank" rel="noopener" aria-label="Instagram">
+                    <i class="fa-brands fa-instagram"></i>
+                </a>
+                <a href="https://linkedin.com/company/yourcompany" target="_blank" rel="noopener" aria-label="LinkedIn">
+                    <i class="fa-brands fa-linkedin"></i>
+                </a>
+                <a href="https://youtube.com/yourchannel" target="_blank" rel="noopener" aria-label="YouTube">
+                    <i class="fa-brands fa-youtube"></i>
+                </a>
+            </div>
+         </footer>
+
+    <script src="Create_account.js"></script>
+</body>
+</html>
+
