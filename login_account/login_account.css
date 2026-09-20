@@ -143,7 +143,6 @@ body{
     cursor: pointer;
 }
 
-
 .modal-overlay.show {
     display: flex;
 }

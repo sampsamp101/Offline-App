@@ -5,12 +5,6 @@ const submitBox = document.getElementById("login");
 const messageInfo = document.getElementById("info");
 const revealPwEye = document.getElementById("reveal-pw");
 
-
-document.addEventListener('DOMContentLoaded',()=>{
-    const userName = localStorage.getItem('currentUser');
-    profileUsername.textContent = userName
-});
-
 revealPwEye.addEventListener("click", () => {
     passwordInput.type = "text";    
     revealPwEye.classList.remove("fa-eye");
@@ -44,8 +38,8 @@ submitBox.addEventListener('click', ()=>{
     }
 });
 
-
 function recoverUserFunction(){
+    const modal = document.getElementById("modal");
     const recoverUser = document.getElementById("recover-user");
     const closeBtn = document.getElementById("closeBtn");
     const emailAddressRecovery = document.getElementById("email-address-recovery");
@@ -77,11 +71,4 @@ function recoverUserFunction(){
     });
 }
 
-function recoverPasswordFunction(){
-
-    
-
-
-
-}
-
+recoverUserFunction();

@@ -76,7 +76,6 @@ submitBox.addEventListener('click', () => {
     catch(err){
         messageInfo.textContent=`Failure! unable to create account in database. ${err}`;
     }
-
 });
 
 clearLocalStorage.addEventListener('click', ()=>{

@@ -73,7 +73,6 @@ clearButton.addEventListener('click',()=>{
 document.addEventListener("DOMContentLoaded", () => {
     const storedMsg = localStorage.getItem("Msg");
     const newMsgArr = storedMsg ? JSON.parse(storedMsg) : [];
-
     for (const msgArr of newMsgArr) {
         createElement(msgArr.side, msgArr.message);
     }

@@ -13,35 +13,39 @@ const currentUser = localStorage.getItem("currentUser") || "Guest";
 const contactsByUser = JSON.parse(localStorage.getItem("contactsByUser") || "{}");
 const userContactListArr =  contactsByUser[currentUser] || [];  
 
+function renderContact(name) {
+  contactWrapperCurrent.innerHTML +=
+    `<div class="contacts-message-wrapper"><p>${name}</p><button class="msg message-btn">Message</button><button class="msg delete-btn" data-user="${name}">Delete</button></div>`;
+}
+
 addContacts.addEventListener('click', ()=>{
-  if(userAdd.value === ""){
+  const typed = userAdd.value.trim().toLowerCase();
+  if(typed === ""){
     paraWarning.textContent = "Type in user to add to your contact list!";    
     return;
   } 
-  else if(userAdd.value.toLowerCase() === currentUser.toLowerCase()){
+  else if(typed === currentUser.toLowerCase()){
     paraWarning.textContent = "You can't add yourself to the contact list";
     return;
   }
   else{
-    const usersExistingContacts = JSON.parse(localStorage.getItem('contactsByUser') || "{}"); 
-    if (!usersExistingContacts[currentUser]){
-      usersExistingContacts[currentUser] = [userAdd.value];
-      localStorage.setItem('contactsByUser', JSON.stringify(usersExistingContacts));
-      paraWarning.textContent = `user ${userAdd.value} added to your contact list!`;
-     contactWrapperCurrent.innerHTML +=`<div id="contacts-message-wrapper"><p>${userAdd.value}</p><button class="msg">Message</button></div>`;
+    const currentUserContactsNetwork = contactsByUser[currentUser] || [];
+    if (currentUserContactsNetwork.some(user=> typed === user.toLowerCase())){
+      paraWarning.textContent = `${userAdd.value} is already in your contact list!`;
       return;
     }
-    else{
-     const currentUserContactsNetwork = usersExistingContacts[currentUser] || [];
-      if (currentUserContactsNetwork.includes(userAdd.value)){
-        paraWarning.textContent = `${userAdd.value} is already in your contact list!`;
+    for (const userRegisteredObj of userList){
+      if (userRegisteredObj.user.toLowerCase() === typed){
+        currentUserContactsNetwork.push(userRegisteredObj.user);
+        contactsByUser[currentUser] = currentUserContactsNetwork;
+        localStorage.setItem('contactsByUser', JSON.stringify(contactsByUser));
+        paraWarning.textContent = `${userRegisteredObj.user} added to your contact list!`;
+        renderContact(userRegisteredObj.user);
         return;
       }
-      currentUserContactsNetwork.push(userAdd.value);
-      localStorage.setItem('contactsByUser', JSON.stringify(usersExistingContacts));
-      paraWarning.textContent = `${userAdd.value} added to your contact list!`;
-      contactWrapperCurrent.innerHTML +=`<div id="contacts-message-wrapper"><p>${userAdd.value}</p><button class="msg">Message</button></div>`;
     }
+    paraWarning.textContent = `The user is not registered!`;
+    return;
   } 
 });
 
@@ -51,9 +55,9 @@ logout.addEventListener('click', (event) => {
   window.location.href = "/login_account/login-account.html";
 });
 
-
 clearLocalStorage.addEventListener('click',()=>{
     localStorage.clear();
+    for (const key in contactsByUser) delete contactsByUser[key];
     paraWarning.innerHTML = "";
     contactWrapperCurrent.innerHTML = "";
 });
@@ -62,7 +66,18 @@ document.addEventListener('DOMContentLoaded',()=>{
   if (logout){
     userName.textContent = currentUser;
   }
+  contactWrapperCurrent.innerHTML = "";
   for (const existingContacts of userContactListArr){
-    contactWrapperCurrent.innerHTML +=`<p>${existingContacts}</p>`;
+    renderContact(existingContacts);
   }
+});
+
+contactWrapperCurrent.addEventListener('click', (e) => {
+    if(!e.target.classList.contains("delete-btn"))return;
+
+    const name = e.target.dataset.user;
+    contactsByUser[currentUser] = (contactsByUser[currentUser] || []).filter(contactName => contactName !== name);
+    localStorage.setItem('contactsByUser', JSON.stringify(contactsByUser));
+    e.target.closest(".contacts-message-wrapper").remove();
+    paraWarning.textContent = `${name} removed from your contact list!`;
 });
