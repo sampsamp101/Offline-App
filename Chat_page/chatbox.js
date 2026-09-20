@@ -1,26 +1,24 @@
-const leftSendBtn = document.getElementById("left-send");
-const rightSendBtn = document.getElementById("right-send");
-const leftMsg = document.getElementById("left-message");
-const rightMsg = document.getElementById("right-message");
+const sendBtn = document.getElementById("send-msg-btn");
+const sendMsg = document.getElementById("message-send");
+
 const messageWrapper = document.getElementById("message-wrapper");
 const clearButton = document.getElementById("clear");
+
+const currentUser = localStorage.getItem("currentUser") || "Guest";
+const chatWith = localStorage.getItem("chatWith") || "";
+const storageKey = `Msg:${currentUser}:${chatWith}`;
+
+function captureMessage(side, text){
+    const storedMsg = localStorage.getItem(storageKey);
+    const newMsgArr = storedMsg ? JSON.parse(storedMsg) : [];
+    const nextOrder = newMsgArr.length > 0 ? newMsgArr[newMsgArr.length - 1].order + 1 : 1;
+    newMsgArr.push({order: nextOrder, side, message:text, createdAt: Date.now()});
+    localStorage.setItem(storageKey, JSON.stringify(newMsgArr));
+}
 
 function scrollToBottom(){  
     messageWrapper.scrollTop = messageWrapper.scrollHeight;
 }
-
-function captureMessage(side, text){
-    const storedMsg = localStorage.getItem('Msg');
-    let newMsgArr = (storedMsg) ? JSON.parse(storedMsg) : [];
-    const nextOrder = newMsgArr.length > 0 ? newMsgArr[newMsgArr.length  - 1].order + 1 : 1;
-    newMsgArr.push({
-        order: nextOrder,
-        side: side,
-        message: text,
-        createdAt: Date.now(),
-    });
-    localStorage.setItem('Msg',JSON.stringify(newMsgArr))
-}   
 
 function clearAllMessages(){
     messageWrapper.innerHTML = "";
@@ -44,38 +42,33 @@ function createElement(side, text){
     scrollToBottom();
 }
 
-leftSendBtn.addEventListener("click", () => {
-    const text = leftMsg.value.trim();
-    if (text === "") {
-        return;
-    }
-    createElement("left", text);
-    captureMessage("left", text);
-    leftMsg.value = "";
-});
-
-rightSendBtn.addEventListener("click", () => {
-    const text = rightMsg.value.trim();
+sendBtn.addEventListener("click", () => {
+    const text = sendMsg.value.trim();
     if (text === "") {
         return;
     }
     createElement("right", text);
     captureMessage("right", text);
-    rightMsg.value = "";
+    sendMsg.value = "";
 });
 
-
 clearButton.addEventListener('click',()=>{
-    localStorage.clear();
+    localStorage.removeItem(storageKey);
     clearAllMessages();
 });
 
 document.addEventListener("DOMContentLoaded", () => {
-    const storedMsg = localStorage.getItem("Msg");
+    const storedMsg = localStorage.getItem(storageKey);
     const newMsgArr = storedMsg ? JSON.parse(storedMsg) : [];
+    
+    const userNameProfile = document.getElementById("username");
+    if (userNameProfile) userNameProfile.textContent = currentUser;
+    
+    const chatWithEl = document.getElementById("chat-with");
+    if(chatWithEl && chatWith) chatWithEl.textContent = chatWith;
+
     for (const msgArr of newMsgArr) {
         createElement(msgArr.side, msgArr.message);
     }
     scrollToBottom();
 });
-

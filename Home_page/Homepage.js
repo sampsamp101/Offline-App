@@ -10,12 +10,16 @@ const clearLocalStorage = document.getElementById("clear-localStorage");
 
 const userList = JSON.parse(localStorage.getItem("usersInfo") || "[]");
 const currentUser = localStorage.getItem("currentUser") || "Guest";
-const contactsByUser = JSON.parse(localStorage.getItem("contactsByUser") || "{}");
-const userContactListArr =  contactsByUser[currentUser] || [];  
+
+let contactsByUser = JSON.parse(localStorage.getItem("contactsByUser") || "{}");
+if (Array.isArray(contactsByUser) || typeof contactsByUser !== "object" || contactsByUser === null) {
+  contactsByUser = {};
+}
+const userContactListArr = contactsByUser[currentUser] || [];
 
 function renderContact(name) {
   contactWrapperCurrent.innerHTML +=
-    `<div class="contacts-message-wrapper"><p>${name}</p><button class="msg message-btn">Message</button><button class="msg delete-btn" data-user="${name}">Delete</button></div>`;
+    `<div class="contacts-message-wrapper"><p>${name}</p><button class="msg message-btn" data-Msg-User="${name}">Message</button><button class="msg delete-btn" data-user="${name}">Delete</button></div>`;
 }
 
 addContacts.addEventListener('click', ()=>{
@@ -56,8 +60,12 @@ logout.addEventListener('click', (event) => {
 });
 
 clearLocalStorage.addEventListener('click',()=>{
-    localStorage.clear();
-    for (const key in contactsByUser) delete contactsByUser[key];
+    localStorage.removeItem("contactByUser");
+    for (const key of Object.keys(localStorage)) {
+      if (key.startsWith("Msg:")) localStorage.removeItem(key);
+    }
+
+    contactsByUser = {};
     paraWarning.innerHTML = "";
     contactWrapperCurrent.innerHTML = "";
 });
@@ -73,11 +81,21 @@ document.addEventListener('DOMContentLoaded',()=>{
 });
 
 contactWrapperCurrent.addEventListener('click', (e) => {
-    if(!e.target.classList.contains("delete-btn"))return;
+    if(e.target.classList.contains("delete-btn")){
+      const name = e.target.dataset.user;
+      contactsByUser[currentUser] = (contactsByUser[currentUser] || []).filter(contactName => contactName !== name);
+      localStorage.setItem('contactsByUser', JSON.stringify(contactsByUser));
+      e.target.closest(".contacts-message-wrapper").remove();
+      paraWarning.textContent = `${name} removed from your contact list!`;
+    }
+      else if (e.target.classList.contains("message-btn")) {
+      const name = e.target.dataset.msgUser;
+      localStorage.setItem("chatWith", name);
+      window.location.href = "/Chat_page/chatbox.html";
+    }
 
-    const name = e.target.dataset.user;
-    contactsByUser[currentUser] = (contactsByUser[currentUser] || []).filter(contactName => contactName !== name);
-    localStorage.setItem('contactsByUser', JSON.stringify(contactsByUser));
-    e.target.closest(".contacts-message-wrapper").remove();
-    paraWarning.textContent = `${name} removed from your contact list!`;
 });
+
+
+
+

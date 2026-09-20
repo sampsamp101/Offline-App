@@ -164,6 +164,9 @@
             border-radius: 20px;
             padding: 16px 8px;
         }
+        .msg:hover{
+            background-color: lightblue;
+        }
     }
 }
 

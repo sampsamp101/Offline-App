@@ -101,24 +101,22 @@
     flex-direction: row;
     gap: 30px;
     width: 100%;
-    #left-input-wrapper, 
-    #right-input-wrapper{
+    #left-input-wrapper{
         flex: 1;
         min-width: 0;
         display:flex;
-        flex-direction: column;
+        flex-direction: row;
         align-items:center;
-        justify-content: space-evenly;
+        gap: 20px;                 
         box-sizing: border-box;
     }
-    #left-message,
-    #right-message{
-        font-size:32px;
-        border:5px solid black;
+    #message-send{
+        flex: 1;
+        min-width: 0;
+        font-size: 32px;
+        border: 5px solid black;
         border-radius: 20px;
-        padding:10px;
-        width: 100%;
-        max-width:300px;
+        padding: 10px 20px;
     }
     .button{
             font-size:32px;
