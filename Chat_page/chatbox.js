@@ -32,13 +32,28 @@ function createElement(side, text){
     newMsg.textContent = text;
     newMsg.style.fontSize = "20px";
     newMsg.style.borderRadius = "50px";
+    const newDate = document.createElement("p")
+    newMsg.style.border = "1px solid black";
+    newMsg.style.padding = "20px";
+    newMsg.style.width = "fit-content";
+    newMsg.style.fontSize = "20px";
+    newMsg.style.borderRadius = "50px";
+    const timestamp = Date.now();
+    const date = new Date(timestamp);
+    const hours = date.getHours();       
+    const minutes = date.getMinutes();   
+    const seconds = date.getSeconds();   
+    newDate.textContent = `${hours}:${minutes}:${seconds}`;
     if (side === "left"){
         newMsg.style.alignSelf = "flex-start";
+        newDate.style.alignSelf = "flex-start";
     }
     else if (side === "right"){
         newMsg.style.alignSelf="flex-end";
+        newDate.style.alignSelf = "flex-end";
     }
     messageWrapper.appendChild(newMsg);
+    messageWrapper.appendChild(newDate);
     scrollToBottom();
 }
 
