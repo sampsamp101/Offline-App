@@ -7,12 +7,13 @@ const clearButton = document.getElementById("clear");
 const currentUser = localStorage.getItem("currentUser") || "Guest";
 const chatWith = localStorage.getItem("chatWith") || "";
 const storageKey = `Msg:${currentUser}:${chatWith}`;
+const receivingMessageKey = `Msg:${chatWith}:${currentUser}`;
 
-function captureMessage(side, text){
+function captureMessage(side, text, createdAt = Date.now()){
     const storedMsg = localStorage.getItem(storageKey);
     const newMsgArr = storedMsg ? JSON.parse(storedMsg) : [];
     const nextOrder = newMsgArr.length > 0 ? newMsgArr[newMsgArr.length - 1].order + 1 : 1;
-    newMsgArr.push({order: nextOrder, side, message:text, createdAt: Date.now()});
+    newMsgArr.push({order: nextOrder, side, message:text, createdAt});
     localStorage.setItem(storageKey, JSON.stringify(newMsgArr));
 }
 
@@ -24,7 +25,7 @@ function clearAllMessages(){
     messageWrapper.innerHTML = "";
 }
 
-function createElement(side, text){
+function createElement(side, text, createdAt = Date.now()){
     const newMsg = document.createElement("p");
     newMsg.style.border = "2px solid black";
     newMsg.style.padding = "20px";
@@ -38,17 +39,18 @@ function createElement(side, text){
     newMsg.style.width = "fit-content";
     newMsg.style.fontSize = "20px";
     newMsg.style.borderRadius = "50px";
-    const timestamp = Date.now();
+    const timestamp = createdAt;
     const date = new Date(timestamp);
-    const hours = date.getHours();       
-    const minutes = date.getMinutes();   
-    const seconds = date.getSeconds();   
+    const hours = String(date.getHours()).padStart(2, "0");        
+    const minutes = String(date.getMinutes()).padStart(2,"0");  
+    const seconds = String(date.getSeconds()).padStart(2,"0");  
+
     newDate.textContent = `${hours}:${minutes}:${seconds}`;
-    if (side === "left"){
+    if (side === "incoming"){
         newMsg.style.alignSelf = "flex-start";
         newDate.style.alignSelf = "flex-start";
     }
-    else if (side === "right"){
+    else if (side === "user"){
         newMsg.style.alignSelf="flex-end";
         newDate.style.alignSelf = "flex-end";
     }
@@ -62,8 +64,9 @@ sendBtn.addEventListener("click", () => {
     if (text === "") {
         return;
     }
-    createElement("right", text);
-    captureMessage("right", text);
+    const now = Date.now();
+    createElement("user", text, now);
+    captureMessage("user", text, now);
     sendMsg.value = "";
 });
 
@@ -76,14 +79,21 @@ document.addEventListener("DOMContentLoaded", () => {
     const storedMsg = localStorage.getItem(storageKey);
     const newMsgArr = storedMsg ? JSON.parse(storedMsg) : [];
     
+    const receivingMsg = localStorage.getItem(receivingMessageKey);
+    const receivingMsgArr = receivingMsg ? JSON.parse(receivingMsg) : [];
+
     const userNameProfile = document.getElementById("username");
     if (userNameProfile) userNameProfile.textContent = currentUser;
-    
+
     const chatWithEl = document.getElementById("chat-with");
     if(chatWithEl && chatWith) chatWithEl.textContent = chatWith;
 
+    for (const receivingMsg of receivingMsgArr){
+        createElement("incoming", receivingMsg.message, receivingMsg.createdAt);
+    }
+
     for (const msgArr of newMsgArr) {
-        createElement(msgArr.side, msgArr.message);
+        createElement(msgArr.side, msgArr.message, msgArr.createdAt);
     }
     scrollToBottom();
 });
