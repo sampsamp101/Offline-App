@@ -12,7 +12,10 @@ body{
 #logo{
     font-family: 'Space Grotesk', sans-serif;
     font-weight: 700;
-    text-align:center;
+    #logo-text{
+        text-decoration: none;
+        color:black;
+    }
 }
 
 #navbar{

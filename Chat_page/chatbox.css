@@ -95,6 +95,31 @@
         box-sizing:border-box;
         overflow-y: auto;
         overflow-x: hidden;
+
+        .newDate{
+            display: flex;
+            align-items: center;
+            text-align: center;
+            width: 100%;
+        }
+
+        .newDate::before,
+        .newDate::after{
+            content: "";
+            flex: 1;
+            height: 1px;
+            background-color: black;
+        }
+
+        .newDate::before{
+            margin-right: 12px;
+        }
+
+        .newDate::after{
+            margin-left: 12px;
+        }
+
+
     }
 #message-wrapper-container{
     display:flex;

@@ -40,4 +40,4 @@ rightchevron.addEventListener("click", () => {
     }
 });
 
-showPage(currentPage); // page 1 on load
+showPage(currentPage); 

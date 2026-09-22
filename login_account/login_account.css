@@ -2,6 +2,7 @@ body{
     margin:0px;
     padding:0px;
     gap:0px;
+    height: 100vh;
     background-color:lightgreen;
     display:flex;
     flex-direction:column;
@@ -11,6 +12,10 @@ body{
 #logo{
     font-family: 'Space Grotesk', sans-serif;
     font-weight: 700;
+    #logo-text{
+        text-decoration: none;
+        color:black;
+    }
 }
 
 #navbar{
@@ -145,4 +150,31 @@ body{
 
 .modal-overlay.show {
     display: flex;
+}
+
+
+footer{
+    background-color: coral;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items:center;
+    padding: 5px 15px;
+    min-height:40px;
+
+    h3{
+        margin:0;
+    }
+
+    .social-icons{
+        display:flex;
+        gap: 40px;
+        font-size: 30px;
+    }
+}
+
+
+@media(max-width:768px){
+
+    
+
 }

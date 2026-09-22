@@ -41,7 +41,7 @@
             background-color:green;
         }
     }
-
+    
     label[for="searchFilter"] {
         font-size: 19px;
     }
@@ -150,6 +150,7 @@
             min-height: 1.2em;
         }
     }
+
     .contacts-message-wrapper{
         display:flex;
         flex-direction: row;
@@ -167,6 +168,27 @@
         .msg:hover{
             background-color: lightblue;
         }
+    }
+
+    .contacts-messages-container{
+        display:flex;
+        justify-content: space-between;
+        gap: 20px;
+        border: 2px solid black;
+        border-radius: 20px;
+        padding: 16px 40px;
+        .message-container{
+            display:flex;
+            gap: 20px;
+        }
+        #name-message-container{
+            display:flex;
+            gap:10px;
+        }
+    }
+    
+    .contacts-messages-container:hover{
+        background-color: green;
     }
 }
 
