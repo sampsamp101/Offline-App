@@ -5,46 +5,54 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Offline Homepage</title>
     <link rel="stylesheet" href="Homepage.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
 <body>
     <main>
         <nav id="navbar">
-            <h2 id="logo">
-                OFFLINE
-            </h2>
-              <li><a href="Homepage.html" id="home-chat">Home</a></li>
-            <label for="searchFilter">
-                Search User Messages
-              <input id="searchFilter" type="text"/>
-            </label>
             <ul>
-              <li><p>Welcome</p></li>
-              <li><p id="username"></p></li>
-              <li><a href="/login_account/login-account.html" id="log-out">Log out</a></li>
+                <li id="profile"><p>Profile</p></li>
+                <li id="settings"><p>Settings</p></li>
+                <li id="contacts"><p>Contacts</p></li>
+                <li id="logout"><p>Log out</p></li>
+                <li id="clear-localStorage"><p>Clear All</p></li>
             </ul>
         </nav>
-        <div class="outer-container">
+        <div id="global-modal-root"></div>
+        <div id="main-app"></div>
+    
+        <!-- <div class="outer-container">
             <div class="inner-container">
-                <div id="message-wrapper">
+                <div id="preview-message-wrapper">
                 </div>
-                <div id="add-remove-contacts-wrapper">
-                    <div id="contacts-wrapper">
-                    </div>
-                    <div id="current-contacts-wrapper">
-                        <button class="button" id="add-contact-list">Add all contacts</button>
-                        <button class="button" id="add">Add Contacts</button>
-                        <div id="input-outcome-wrapper">
-                            <input id="search-function" type="text"/>
-                            <p id="warning-msg"></p>
-                        </div>
-                        <button class="button" id="remove">Remove Contacts</button>
-                        <button class="button" id="clear-localStorage">Clear Local Storage and messages</button>
-                    </div>    
-                 </div>
             </div>
-        </div>
+        </div> -->
+        
+        <!-- <div class="outer-chat-popup-modal modal-overlay">
+            <div class="inner-chat-popup-modal">
+                <div class ="top-header">
+                    <i class="fa-solid fa-angles-left"></i>
+                    <div class ="name" id="chat-with">
+                    </div>
+                </div> 
+            <div id = "message-wrapper"></div>
+            <div id ="message-wrapper-container">
+                <div id="input-buttons-wrapper">    
+                 <input
+                        type="text"
+                        id="message-send"
+                        class="input"
+                        placeholder="Key in your desired chat"
+                    >
+                    <button class="button" id="send-msg-btn">Send</button>
+                    <button class="button" id="clear">clear Messages</button>
+                </div>
+            </div>
+        </div> -->
     </main>
-    <!-- Link external JavaScript file here -->
     <script src="Homepage.js"></script>
 </body>
 </html>
+
+
+

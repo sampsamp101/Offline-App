@@ -1,9 +1,6 @@
 const sendBtn = document.getElementById("send-msg-btn");
 const sendMsg = document.getElementById("message-send");
 
-const messageWrapper = document.getElementById("message-wrapper");
-const clearButton = document.getElementById("clear");
-
 const currentUser = localStorage.getItem("currentUser") || "Guest";
 const chatWith = localStorage.getItem("chatWith") || "";
 const storageKey = `Msg:${currentUser}:${chatWith}`;
@@ -12,16 +9,12 @@ const receivingMessageKey = `Msg:${chatWith}:${currentUser}`;
 function captureMessage(side, text, createdAt = Date.now()){
     const storedMsg = localStorage.getItem(storageKey);
     const newMsgArr = storedMsg ? JSON.parse(storedMsg) : [];
-    const nextOrder = newMsgArr.length > 0 ? newMsgArr[newMsgArr.length - 1].order + 1 : 1;
-    
+    const nextOrder = newMsgAjmerr.length > 0 ? newMsgArr[newMsgArr.length - 1].order + 1 : 1;
     const currentDate = new Date(createdAt);
-    
     const year = currentDate.getFullYear();
     const month = String(currentDate.getMonth() + 1).padStart(2, "0");
     const day = String(currentDate.getDate()).padStart(2, "0");
-    
     const currentDay = `${day}/${month}/${year}`;
-
     newMsgArr.push({order: nextOrder, side, message:text, createdAt, currentDay});
     localStorage.setItem(storageKey, JSON.stringify(newMsgArr));
 }
