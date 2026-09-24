@@ -177,7 +177,6 @@ function renderContacts(){
 
     const contactsContainer = document.getElementById("contacts-container");
     openModal(contactsContainer);
-
 }
 
 function renderLogout(){
@@ -222,6 +221,28 @@ function navigateModal(modal){
   renderModal();
 }
 
+const navbarNavigate = document.getElementById("navbar");
+
+function openNavbar(){
+  navbarNavigate.classList.add("show");
+}
+
+function closeNavbar(){
+  navbarNavigate.classList.remove("show");
+}
+
+navbarNavigate.addEventListener('click', (event)=>{
+    if (event.target.closest("li")) {
+      return;
+    }
+    if (navbarNavigate.classList.contains("show")){
+      closeNavbar();
+    }
+    else if (!navbarNavigate.classList.contains("show")){
+      openNavbar();
+    }
+});
+
 function globalModal(){
      const profileButton = document.getElementById("profile");
     const settingsButton = document.getElementById("settings");
@@ -245,7 +266,6 @@ function globalModal(){
     });
 
     const mainGlobalModal = document.getElementById("global-modal-root");
-
     mainGlobalModal.addEventListener('click', (e)=>{
         const closeButton = e.target.closest(".modal-close-btn");
         if (closeButton){
@@ -268,33 +288,11 @@ function globalModal(){
     })
 }
 
-const navbarNavigate = document.getElementById("navbar");
-
-function openNavbar(){
-  navbarNavigate.classList.add("show");
-}
-
-function closeNavbar(){
-  navbarNavigate.classList.remove("show");
-}
-
-navbarNavigate.addEventListener('click', (event)=>{
-    if (event.target.closest("li")) {
-      return;
-    }
-    if (navbarNavigate.classList.contains("show")){
-      closeNavbar();
-    }
-    else if (!navbarNavigate.classList.contains("show")){
-      openNavbar();
-    }
-});
-
+globalModal();
 function renderChat() {
     const mainApp = document.getElementById("main-app");
     mainApp.innerHTML = `
-        <div class="outer-chat-popup-modal">
-            <div class="inner-chat-popup-modal">
+         <div class="chat-popup-modal">
                 <div class="top-header">
                     <button id="close-chat">
                         <i class="fa-solid fa-angles-left"></i>
@@ -324,17 +322,111 @@ function renderChat() {
                     </div>
                 </div>
             </div>
-        </div>
     `;
-    document.getElementById("chat-with").textContent =
-        appState.chatWith;
+
+    document.getElementById("chat-with").textContent = appState.chatWith;
     renderMessages();
     setupChatEvents();
 }
 
+function formatDate(timestamp) {
+    const d = new Date(timestamp);
+    const day = String(d.getDate()).padStart(2, "0");
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    return `${day}/${month}/${d.getFullYear()}`;
+}
+
+function renderMessages() {
+    const wrapper = document.getElementById("message-wrapper");
+    if (!wrapper) return;
+
+    const currentUser = localStorage.getItem("currentUser") || "Guest";
+    const chatWith = appState.chatWith;
+
+    const mine = JSON.parse(localStorage.getItem(`Msg:${currentUser}:${chatWith}`) || "[]")
+        .map(m => ({ ...m, mine: true }));
+    const theirs = JSON.parse(localStorage.getItem(`Msg:${chatWith}:${currentUser}`) || "[]")
+        .map(m => ({ ...m, mine: false }));
+
+    const all = [...mine, ...theirs].sort((a, b) => a.createdAt - b.createdAt);
+    let lastDay = "";
+    wrapper.innerHTML = all.map(m => {
+        let html = "";
+        const day = formatDate(m.createdAt);
+         
+        if (day !== lastDay) {
+            html += `<p class="newDate">${day}</p>`;
+            lastDay = day;
+        }
+        const d = new Date(m.createdAt);
+        const time = `${String(d.getHours()).padStart(2,"0")}:${String(d.getMinutes()).padStart(2,"0")}:${String(d.getSeconds()).padStart(2,"0")}`;
+        const side = m.mine ? "sending" : "receiving";
+        html += `<p class="chat-bubble ${side}">${m.message}</p><p class="chat-time ${side}">${time}</p>`;
+        return html;
+    }).join("");
+
+    wrapper.scrollTop = wrapper.scrollHeight;
+}
+
+function sendMessage() {
+    const currentUser = localStorage.getItem("currentUser") || "Guest";
+    const chatWith = appState.chatWith;
+    if (!chatWith) return;
+
+    const input = document.getElementById("message-send");
+    const text = input.value.trim();
+    if (text === "") return;
+
+    const key = `Msg:${currentUser}:${chatWith}`;
+    const arr = JSON.parse(localStorage.getItem(key) || "[]");
+    const nextOrder = arr.length ? arr[arr.length - 1].order + 1 : 1;
+    arr.push({ order: nextOrder, message: text, createdAt: Date.now() });
+    localStorage.setItem(key, JSON.stringify(arr));
+
+    input.value = "";
+    renderMessages();
+}
+
+function clearMessages() {
+    const currentUser = localStorage.getItem("currentUser") || "Guest";
+    const chatWith = appState.chatWith;
+    if (!chatWith) return;
+    localStorage.removeItem(`Msg:${currentUser}:${chatWith}`);
+    renderMessages();
+}
+
+function navigateMain(screen) {
+    appState.currentMain = screen;
+    renderMain();
+}
+
+mainApp.addEventListener("click", (e) => {
+    const deleteBtn = e.target.closest(".delete-btn[data-user]");
+    if (deleteBtn) {
+        const currentUser = localStorage.getItem("currentUser") || "Guest";
+        localStorage.removeItem(`Msg:${currentUser}:${deleteBtn.dataset.user}`);
+        renderPreview();
+        return;
+    }
+
+    const previewRow = e.target.closest(".preview-message");
+    if (previewRow) {
+        appState.chatWith = previewRow.dataset.previewUser;
+        navigateMain("chat");
+    }
+});
+
+document.getElementById("clear-localStorage").addEventListener("click", () => {
+    localStorage.removeItem("contactsByUser");
+    for (const key of Object.keys(localStorage)) {
+        if (key.startsWith("Msg:")) localStorage.removeItem(key);
+    }
+    renderMain();
+});
+
+
 function renderPreview() {
     const mainApp = document.getElementById("main-app");
-
     mainApp.innerHTML = `
         <div class="outer-container">
             <div class="inner-container">
@@ -343,11 +435,7 @@ function renderPreview() {
         </div>
     `;
 
-    renderMessagePreviews();
-}
-
-function renderMessagePreviews() {
-    const messageHistory =
+const messageHistory =
         document.getElementById("preview-message-wrapper");
 
     if (!messageHistory) return;
@@ -434,72 +522,27 @@ function renderMessagePreviews() {
                     Delete
                 </button>
             </div>
-
             <hr/>
         `;
     }
 }
 
-function renderMessages() {
-    const wrapper = document.getElementById("message-wrapper");
-    if (!wrapper) return;
-
-    const currentUser = localStorage.getItem("currentUser") || "Guest";
-    const chatWith = appState.chatWith;
-
-    const mine = JSON.parse(localStorage.getItem(`Msg:${currentUser}:${chatWith}`) || "[]")
-        .map(m => ({ ...m, mine: true }));
-    const theirs = JSON.parse(localStorage.getItem(`Msg:${chatWith}:${currentUser}`) || "[]")
-        .map(m => ({ ...m, mine: false }));
-
-    const all = [...mine, ...theirs].sort((a, b) => a.createdAt - b.createdAt);
-
-    wrapper.innerHTML = all.map(m => {
-        const d = new Date(m.createdAt);
-        const time = `${String(d.getHours()).padStart(2,"0")}:${String(d.getMinutes()).padStart(2,"0")}:${String(d.getSeconds()).padStart(2,"0")}`;
-        const side = m.mine ? "sending" : "receiving";
-        return `<p class="chat-bubble ${side}">${m.message}</p><p class="chat-time ${side}">${time}</p>`;
-    }).join("");
-    
-    wrapper.scrollTop = wrapper.scrollHeight;
-}
-
-
-function sendMessage() {
-    const currentUser = localStorage.getItem("currentUser") || "Guest";
-    const chatWith = appState.chatWith;
-    if (!chatWith) return;
-
-    const input = document.getElementById("message-send");
-    const text = input.value.trim();
-    if (text === "") return;
-
-    const key = `Msg:${currentUser}:${chatWith}`;
-    const arr = JSON.parse(localStorage.getItem(key) || "[]");
-    const nextOrder = arr.length ? arr[arr.length - 1].order + 1 : 1;
-    arr.push({ order: nextOrder, message: text, createdAt: Date.now() });
-    localStorage.setItem(key, JSON.stringify(arr));
-
-    input.value = "";
-    renderMessages();
-}
-
-function clearMessages() {
-    const currentUser = localStorage.getItem("currentUser") || "Guest";
-    const chatWith = appState.chatWith;
-    if (!chatWith) return;
-    localStorage.removeItem(`Msg:${currentUser}:${chatWith}`);
-    renderMessages();
-}
-
-function navigateMain(screen) {
-    appState.currentMain = screen;
-    renderMain();
+function setupChatEvents() {
+    document
+        .getElementById("close-chat")
+        .addEventListener("click", () => {
+            navigateMain("preview");
+        });
+    document
+        .getElementById("send-msg-btn")
+        .addEventListener("click", sendMessage);
+    document
+        .getElementById("clear")
+        .addEventListener("click", clearMessages);
 }
 
 function renderMain() {
     const mainApp = document.getElementById("main-app");
-
     mainApp.innerHTML = "";
 
     switch (appState.currentMain) {
@@ -516,48 +559,6 @@ function renderMain() {
     }
 }
 
-mainApp.addEventListener("click", (e) => {
-    const deleteBtn = e.target.closest(".delete-btn[data-user]");
-    if (deleteBtn) {
-        const currentUser = localStorage.getItem("currentUser") || "Guest";
-        localStorage.removeItem(`Msg:${currentUser}:${deleteBtn.dataset.user}`);
-        renderMessagePreviews();
-        return;
-    }
-
-    const previewRow = e.target.closest(".preview-message");
-    if (previewRow) {
-        appState.chatWith = previewRow.dataset.previewUser;
-        navigateMain("chat");
-    }
-});
-
-document.getElementById("clear-localStorage").addEventListener("click", () => {
-    localStorage.removeItem("contactsByUser");
-    for (const key of Object.keys(localStorage)) {
-        if (key.startsWith("Msg:")) localStorage.removeItem(key);
-    }
-    renderMain();
-});
-
-function setupChatEvents() {
-
-    document
-        .getElementById("close-chat")
-        .addEventListener("click", () => {
-            navigateMain("preview");
-        });
-
-    document
-        .getElementById("send-msg-btn")
-        .addEventListener("click", sendMessage);
-
-    document
-        .getElementById("clear")
-        .addEventListener("click", clearMessages);
-}
-
-globalModal();
 renderMain();
 
 
@@ -755,7 +756,6 @@ renderMain();
 //   }
 // }
 
-
 // const sendBtn = document.getElementById("send-msg-btn");
 // const sendMsg = document.getElementById("message-send");
 
@@ -896,74 +896,8 @@ renderMain();
 //     scrollToBottom();
 // });
 
-// function renderHome() {
-//     mainApp.innerHTML = `
-//         <div class="outer-container">
-//             <div class="inner-container">
-//                 <div id="preview-message-wrapper">
-//                 </div>
-//             </div>
-//         </div>
-//     `;
-//     renderMessagePreviews();
-// }
 
-// function renderMessagePreviews() {
-//     const wrapper =
-//         document.getElementById("preview-message-wrapper");
-//     wrapper.innerHTML = "";
-//     const contacts =
-//         contactsByUser[currentUser] || [];
-//     for (const contact of contacts) {
-//         const messages =
-//             getMessages(contact);
-//         if (messages.length === 0) {
-//             continue;
-//         }
-//         messages.sort(
-//             (a, b) => a.createdAt - b.createdAt
-//         );
-//         const lastMessage =
-//             messages[messages.length - 1];
-
-//         const date =
-//             new Date(lastMessage.createdAt);
-
-//         const hours =
-//             String(date.getHours()).padStart(2, "0");
-
-//         const minutes =
-//             String(date.getMinutes()).padStart(2, "0");
-
-//         const seconds =
-//             String(date.getSeconds()).padStart(2, "0");
-
-//         wrapper.innerHTML += `
-//             <div
-//                 class="contacts-messages-container preview-message"
-//                 data-user="${contact}"
-//             >
-
-//                 <div class="message-container">
-
-//                     <p>
-//                         ${hours}:${minutes}:${seconds}
-//                     </p>
-
-//                     <span>
-//                         <p>${contact}:</p>
-//                         <p>${lastMessage.message}</p>
-//                     </span>
-
-//                 </div>
-
-//             </div>
-
-//             <hr>
-//         `;
-//     }
 // function getMessages(contact) {
-
 //     const sendingKey =
 //         `Msg:${currentUser}:${contact}`;
 
