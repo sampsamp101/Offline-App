@@ -29,9 +29,7 @@ module.exports = async function handler(req, res){
 
             subject: "Welcome to Offline App!",
 
-            html: `
-            
-            <h1>Wlecome to Oflline App!<h1/>
+            html: `<h1>Wlecome to Offline App!<h1/>
             <p>Thank you for creating an account</p>
             <p> We are exited to have you here! </p>
             `

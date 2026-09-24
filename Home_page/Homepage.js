@@ -26,7 +26,7 @@ function openModal(modal) {
     if (logoutContainer){
         logoutContainer.classList.remove("show");
     }
-    void modal.offsetWidth; //ensure the browser compute the starting styles. if not, it will merge both class changes into one frame and skips transition    
+    void modal.offsetWidth; 
     modal.classList.add("show");
 }
 
@@ -105,16 +105,13 @@ function renderContact(name) {
 
 function renderContacts(){
     const currentUser = localStorage.getItem("currentUser") || "Guest";
-
     const userList =
         JSON.parse(localStorage.getItem("usersInfo") || "[]");
-
     let contactsByUser = JSON.parse(localStorage.getItem("contactsByUser") || "{}");
     if (Array.isArray(contactsByUser) || typeof contactsByUser !== "object" || contactsByUser === null) {
       contactsByUser = {};
     }
     const userContactListArr = contactsByUser[currentUser] || [];
-
     const mainGlobalModal = document.getElementById("global-modal-root");
     mainGlobalModal.innerHTML = `<div id="contacts-container" class="modal-overlay show">
             <div id="modal-box-contacts">
@@ -140,7 +137,6 @@ function renderContacts(){
       contactWrapperCurrent.innerHTML +=
       `<div class="contacts-message-wrapper message-btn delete-btn" data-msg-user="${name}"><img id="image-contacts"src="/Images/profile-icon-design-free-vector.jpg"/><p class="contacts-name">${name}</p></div>`;
     }
-
     const paraWarning = document.getElementById("warning-msg");
     const userAdd = document.getElementById("search-function");
 
@@ -174,7 +170,6 @@ function renderContacts(){
         return;
       }
     });
-
     const contactsContainer = document.getElementById("contacts-container");
     openModal(contactsContainer);
 }
@@ -435,9 +430,6 @@ function renderPreview() {
         </div>
     `;
 
-
-
-    
 const messageHistory =
         document.getElementById("preview-message-wrapper");
 
@@ -517,7 +509,6 @@ const messageHistory =
                         <p>${lastMessage.message}</p>
                     </span>
                 </div>
-
                 <button
                     class="msg delete-btn"
                     data-user="${contactName}"
@@ -547,7 +538,6 @@ function setupChatEvents() {
 function renderMain() {
     const mainApp = document.getElementById("main-app");
     mainApp.innerHTML = "";
-
     switch (appState.currentMain) {
         case "preview":
             renderPreview();

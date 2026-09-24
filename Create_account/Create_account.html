@@ -52,6 +52,19 @@
         <button id="clearUsers">Clear local storage</button>
     </div>
 
+    <div id="modal-popup-email-verification" class="modal-overlay">
+        <div class="modal-box">
+            <button id="closeBtn" class="modal-close">&times;</button>
+            <h2>Verify your email</h2>
+            <p id="verify-text"></p>
+            <input id="verify-code" type="text" inputmode="numeric" maxlength="6"
+                autocomplete="one-time-code" placeholder="6-digit code">
+            <button id="verify-btn">Verify</button>
+            <button id="resend-btn">Resend code</button>
+            <p id="verify-msg"></p>
+        </div>
+    </div>
+
     <footer>
             <h3>© 2026 Offline</h3>
             <div class="social-icons">
@@ -72,7 +85,8 @@
                 </a>
             </div>
     </footer>
- <script src="https://cdn.jsdelivr.net/npm/axios@1/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios@1/dist/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.2/axios.min.js"></script>
     <script src="Create_account.js"></script>
 </body>
 </html>
