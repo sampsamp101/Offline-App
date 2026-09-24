@@ -1,6 +1,3 @@
-require('dotenv').config();
-
-const axios = require('axios');
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -24,6 +21,7 @@ function togglePasswordVisibility(inputElement, eyeElement) {
     eyeElement.classList.toggle("fa-eye-slash", isHidden);
 }
 
+
 async function sendEmail(){
   const { data, error } = await resend.emails.send({
     from: 'Acme <onboarding@resend.dev>',
@@ -36,6 +34,7 @@ async function sendEmail(){
   }
   console.log({ data });
 };
+
 
 if (revealPwEye) {
     revealPwEye.addEventListener("click", () => togglePasswordVisibility(passwordInput, revealPwEye));
