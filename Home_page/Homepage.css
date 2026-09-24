@@ -60,7 +60,6 @@
     visibility: visible;
 }
 
-
 .outer-container {
   width: 100vw;
   height: 100vh;
@@ -214,7 +213,7 @@
 .fa-solid.fa-angles-down {
     display:flex;
     justify-content: flex-end;
-    align-self: cen ter;   
+    align-self: center;   
     margin-top: auto;       
     font-size: 400px;
     animation-name: bounce;
@@ -222,6 +221,7 @@
     animation-timing-function: ease-in-out;
     animation-iteration-count: infinite;
 }
+
 #swipe-add-contacts{
     align-self:center;
     font-size: 32px;

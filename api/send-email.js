@@ -3,7 +3,6 @@ const {Resend} = require("resend");
 
 module.exports = async function handler(req, res){
 
-     
     // ONLY FOR POST REQUESTS
     if (req.method !== "POST"){
         return res.status(405).json({
@@ -37,9 +36,7 @@ module.exports = async function handler(req, res){
             <p> We are exited to have you here! </p>
             `
         });
-
         // Handle Resend errors
-        
         if (error){
             console.error("Resend error", error);
 
@@ -47,11 +44,9 @@ module.exports = async function handler(req, res){
                 message: "Unable to send email"
             });
         }
-
         //Successful response
         return res.status(200).json({
             message: "Email sent succesfuly!",
-
             id: data.id
         });
     } catch (error){

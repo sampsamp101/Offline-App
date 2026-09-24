@@ -9,11 +9,31 @@ if (!mainApp) {
     console.error("Fatal: #main-app not found in the DOM. Check Homepage.html.");
 }
 
+function openModal(modal) {
+    const profileContainer = document.getElementById("profile-container");
+    const settingsContainer = document.getElementById("settings-container");
+    const contactsContainer = document.getElementById("contacts-container");
+    const logoutContainer = document.getElementById("logout-container");
+    if (profileContainer){
+        profileContainer.classList.remove("show");
+    }
+    if (settingsContainer){
+        settingsContainer.classList.remove("show");
+    }
+    if (contactsContainer){
+        contactsContainer.classList.remove("show");
+    }
+    if (logoutContainer){
+        logoutContainer.classList.remove("show");
+    }
+    void modal.offsetWidth; //ensure the browser compute the starting styles. if not, it will merge both class changes into one frame and skips transition    
+    modal.classList.add("show");
+}
+
 function renderProfile() {
-    
     const mainGlobalModal = document.getElementById("global-modal-root");
     mainGlobalModal.innerHTML = ` 
-    <div id="profile-container" class="modal-overlay show">
+        <div id="profile-container" class="modal-overlay">
              <div id="modal-box-profile">
                 <button class="modal-close-btn">&times</button>
                 <div id="modal-profile-picture-container">
@@ -33,6 +53,7 @@ function renderProfile() {
 
     const storedUsers = JSON.parse(localStorage.getItem('usersInfo') || '[]');
     const profileEmail = document.getElementById("profile-email");
+
     let currentEmail = "";
     for (const users of storedUsers){
         if (users.name === currentUser){
@@ -44,6 +65,9 @@ function renderProfile() {
     } else {
         profileEmail.textContent = currentEmail;
     }
+
+    const profileContainer = document.getElementById("profile-container");
+    openModal(profileContainer);
 }
 
 function renderSettings(){
@@ -69,14 +93,14 @@ function renderSettings(){
               </label>
             </div>
       </div>`;
+    const settingsContainer = document.getElementById("settings-container");
+    openModal(settingsContainer); 
 }
-
 
 function renderContact(name) {
    const contactWrapperCurrent = document.getElementById("contacts-wrapper");
   contactWrapperCurrent.innerHTML +=
     `<div class="contacts-message-wrapper message-btn delete-btn" data-msg-user="${name}"><img id="image-contacts"src="/Images/profile-icon-design-free-vector.jpg"/><p class="contacts-name">${name}</p></div>`;
-    //                                                                                                                                              ^^^^^ was id="contacts-name"
 }
 
 function renderContacts(){
@@ -92,7 +116,7 @@ function renderContacts(){
     const userContactListArr = contactsByUser[currentUser] || [];
 
     const mainGlobalModal = document.getElementById("global-modal-root");
-    mainGlobalModal.innerHTML = ` <div id="contacts-container" class="modal-overlay show">
+    mainGlobalModal.innerHTML = `<div id="contacts-container" class="modal-overlay show">
             <div id="modal-box-contacts">
                 <button class="modal-close-btn">&times</button>
                 <div id="add-remove-contacts-wrapper">
@@ -110,15 +134,13 @@ function renderContacts(){
                     <p id="swipe-add-contacts">Swipe down to add contacts</p>
             </div>
         </div>`;
-  
     const addContacts = document.getElementById("add");
     const contactWrapperCurrent = document.getElementById("contacts-wrapper");
-
     for (const name of userContactListArr){
       contactWrapperCurrent.innerHTML +=
       `<div class="contacts-message-wrapper message-btn delete-btn" data-msg-user="${name}"><img id="image-contacts"src="/Images/profile-icon-design-free-vector.jpg"/><p class="contacts-name">${name}</p></div>`;
     }
-    
+
     const paraWarning = document.getElementById("warning-msg");
     const userAdd = document.getElementById("search-function");
 
@@ -152,6 +174,10 @@ function renderContacts(){
         return;
       }
     });
+
+    const contactsContainer = document.getElementById("contacts-container");
+    openModal(contactsContainer);
+
 }
 
 function renderLogout(){
@@ -167,6 +193,8 @@ function renderLogout(){
                 </label>
             </div>
         </div>`;
+    const logoutContainer = document.getElementById("logout-container");
+    openModal(logoutContainer); 
 }
 
 function renderModal(){
@@ -195,33 +223,25 @@ function navigateModal(modal){
 }
 
 function globalModal(){
-    const profileButton = document.getElementById("profile");
+     const profileButton = document.getElementById("profile");
     const settingsButton = document.getElementById("settings");
     const contactsButton = document.getElementById("contacts");
     const logoutButton = document.getElementById("logout");
 
-     // PROFILE
     profileButton.addEventListener("click", () => {
-      console.log("clicked profile");
       navigateModal("profile");
     });
 
-    // SETTINGS
     settingsButton.addEventListener("click", () => {
-      console.log("settings");
        navigateModal("settings");
     });
 
-    // CONTACTS
     contactsButton.addEventListener("click", () => {
-      console.log("clicked contacts");
         navigateModal("contacts");
     });
 
-    // LOGOUT
     logoutButton.addEventListener("click", () => {
-      console.log("log out");
-       navigateModal("logout");
+        navigateModal("logout");
     });
 
     const mainGlobalModal = document.getElementById("global-modal-root");
@@ -245,7 +265,6 @@ function globalModal(){
             navigateModal(null);   // close the modal
             navigateMain("chat");  // open the chat
         }
-
     })
 }
 
@@ -260,7 +279,6 @@ function closeNavbar(){
 }
 
 navbarNavigate.addEventListener('click', (event)=>{
-  console.log("navbar-clicked")
     if (event.target.closest("li")) {
       return;
     }
@@ -274,58 +292,45 @@ navbarNavigate.addEventListener('click', (event)=>{
 
 function renderChat() {
     const mainApp = document.getElementById("main-app");
-
     mainApp.innerHTML = `
         <div class="outer-chat-popup-modal">
             <div class="inner-chat-popup-modal">
-
                 <div class="top-header">
                     <button id="close-chat">
                         <i class="fa-solid fa-angles-left"></i>
                     </button>
-
                     <div class="name" id="chat-with"></div>
                 </div>
-
                 <div id="message-wrapper"></div>
-
                 <div id="message-wrapper-container">
                     <div id="input-buttons-wrapper">
-
                         <input
                             type="text"
                             id="message-send"
                             placeholder="Key in your desired chat"
                         >
-
                         <button
                             class="button"
                             id="send-msg-btn"
                         >
                             Send
                         </button>
-
                         <button
                             class="button"
                             id="clear"
                         >
                             Clear Messages
                         </button>
-
                     </div>
                 </div>
-
             </div>
         </div>
     `;
-
     document.getElementById("chat-with").textContent =
         appState.chatWith;
-
     renderMessages();
     setupChatEvents();
 }
-
 
 function renderPreview() {
     const mainApp = document.getElementById("main-app");
@@ -455,7 +460,7 @@ function renderMessages() {
         const side = m.mine ? "sending" : "receiving";
         return `<p class="chat-bubble ${side}">${m.message}</p><p class="chat-time ${side}">${time}</p>`;
     }).join("");
-
+    
     wrapper.scrollTop = wrapper.scrollHeight;
 }
 
@@ -556,8 +561,6 @@ globalModal();
 renderMain();
 
 
-
-
 // messageHistory.addEventListener('click', (event)=>{
 //   const row = event.target.closest(".preview-message");
 //   if (!row){
@@ -575,6 +578,9 @@ renderMain();
 //   }
 // });
 
+// function closeModal(modal) {
+//     modal.classList.remove("show");
+// }
 
 // const logout = document.getElementById("logout");
 // const userName = document.getElementById("username");
@@ -748,90 +754,6 @@ renderMain();
 //     }
 //   }
 // }
-
-// const profileButton = document.getElementById("profile");
-// const settingsButton = document.getElementById("settings");
-// const contactsButton = document.getElementById("contacts");
-// const logoutButton = document.getElementById("logout-selector-li");
-
-// const profileModal = document.getElementById("profile-container");
-// const settingsModal = document.getElementById("settings-container");
-// const contactsModal = document.getElementById("contacts-container");
-// const logoutModal = document.getElementById("logout-container");
-
-// const allModals = [
-//     profileModal,
-//     settingsModal,
-//     contactsModal,
-//     logoutModal
-// ];
-
-// function openModal(modal) {
-//     // Close any currently open modal
-//     allModals.forEach(currentModal => {
-//         currentModal.classList.remove("show");
-//     });
-
-//     // Open selected modal
-//     modal.classList.add("show");
-// }
-
-// function closeModal(modal) {
-//     modal.classList.remove("show");
-// }
-
-// // PROFILE
-// profileButton.addEventListener("click", () => {
-//     openModal(profileModal);
-// });
-
-// // SETTINGS
-// settingsButton.addEventListener("click", () => {
-//     openModal(settingsModal);
-// });
-
-// // CONTACTS
-// contactsButton.addEventListener("click", () => {
-//     openModal(contactsModal);
-// });
-
-// // LOGOUT
-// logoutButton.addEventListener("click", (event) => {
-//     event.preventDefault();
-//     openModal(logoutModal);
-// });
-
-// function openNavbar(){
-//   navbarNavigate.classList.add("show");
-// }
-
-// function closeNavbar(){
-//   navbarNavigate.classList.remove("show");
-// }
-
-// navbarNavigate.addEventListener('click', (event)=>{
-//   console.log("navbar-clicked")
-//     if (event.target.closest("li")) {
-//       return;
-//     }
-//     if (navbarNavigate.classList.contains("show")){
-//       closeNavbar();
-//     }
-//     else if (!navbarNavigate.classList.contains("show")){
-//       openNavbar();
-//     }
-// });
-
-// // Close buttons
-// const closeButtons = document.querySelectorAll(".modal-close-btn");
-// closeButtons.forEach(button => {
-//     button.addEventListener("click", () => {
-//         const modal = button.closest(".modal-overlay");
-//         if (modal) {
-//             closeModal(modal);
-//         }
-//     });
-// });
 
 
 // const sendBtn = document.getElementById("send-msg-btn");
@@ -1040,8 +962,6 @@ renderMain();
 //             <hr>
 //         `;
 //     }
-// }
-
 // function getMessages(contact) {
 
 //     const sendingKey =
@@ -1071,115 +991,12 @@ renderMain();
 //             direction: "receiving"
 //         }))
 //     ];
-
 //     messages.sort(
 //         (a, b) => a.createdAt - b.createdAt
 //     );
-
 //     return messages;
 // }
 
-    // const navbarNavigate = document.getElementById("navbar");
-    // function openModal(modal) {
-    // // Close any currently open modal
-    //       allModals.forEach(currentModal => {
-    //           currentModal.classList.remove("show");
-    //       });
-    //       modal.classList.add("show");
-    // }
-    // function closeModal(modal) {
-    //   modal.classList.remove("show");
-    // }
-    // function openNavbar(){
-    //   navbarNavigate.classList.add("show");
-    // }
-    // function closeNavbar(){
-    //   navbarNavigate.classList.remove("show");
-    // }
-    // navbarNavigate.addEventListener('click', (event)=>{
-    //   console.log("navbar-clicked")
-    //     if (event.target.closest("li")) {
-    //       return;
-    //     }
-    //     if (navbarNavigate.classList.contains("show")){
-    //       closeNavbar();
-    //     }
-    //     else if (!navbarNavigate.classList.contains("show")){
-    //       openNavbar();
-    //     }
-    // });
 
 
-// const profileButton = document.getElementById("profile");
-// const settingsButton = document.getElementById("settings");
-// const contactsButton = document.getElementById("contacts");
-// const logoutButton = document.getElementById("logout-selector-li");
-
-// const profileModal = document.getElementById("profile-container");
-// const settingsModal = document.getElementById("settings-container");
-// const contactsModal = document.getElementById("contacts-container");
-// const logoutModal = document.getElementById("logout-container");
-
-// const allModals = [
-//     profileModal,
-//     settingsModal,
-//     contactsModal,
-//     logoutModal
-// ];
-
-// function openModal(modal) {
-//     // Close any currently open modal
-//     allModals.forEach(currentModal => {
-//         currentModal.classList.remove("show");
-//     });
-
-//     // Open selected modal
-//     modal.classList.add("show");
-// }
-
-// function closeModal(modal) {
-//     modal.classList.remove("show");
-// }
-
-// // PROFILE
-// profileButton.addEventListener("click", () => {
-//     openModal(profileModal);
-// });
-
-// // SETTINGS
-// settingsButton.addEventListener("click", () => {
-//     openModal(settingsModal);
-// });
-
-// // CONTACTS
-// contactsButton.addEventListener("click", () => {
-//     openModal(contactsModal);
-// });
-
-// // LOGOUT
-// logoutButton.addEventListener("click", (event) => {
-//     event.preventDefault();
-//     openModal(logoutModal);
-// });
-
-// function openNavbar(){
-//   navbarNavigate.classList.add("show");
-// }
-
-// function closeNavbar(){
-//   navbarNavigate.classList.remove("show");
-// }
-
-// navbarNavigate.addEventListener('click', (event)=>{
-//   console.log("navbar-clicked")
-//     if (event.target.closest("li")) {
-//       return;
-//     }
-//     if (navbarNavigate.classList.contains("show")){
-//       closeNavbar();
-//     }
-//     else if (!navbarNavigate.classList.contains("show")){
-//       openNavbar();
-//     }
-// });
 
