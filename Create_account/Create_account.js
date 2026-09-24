@@ -19,10 +19,22 @@ function togglePasswordVisibility(inputElement, eyeElement) {
     eyeElement.classList.toggle("fa-eye-slash", isHidden);
 }
 
-async function sendEmail(){
-    const response = await axios.post("api/send-email", {});
-    return response.data;
-};
+async function sendEmail() {
+  try {
+    const response = await axios.post("/api/send-email", {});
+
+    console.log(response.data.message);
+
+    return true;
+  } catch (error) {
+    console.error(
+      "Email error:",
+      error.response?.data?.error || error.message
+    );
+
+    return false;
+  }
+}
 
 
 if (revealPwEye) {
@@ -33,7 +45,7 @@ if (revealConfirmPwEye) {
     revealConfirmPwEye.addEventListener("click", () => togglePasswordVisibility(confirmPasswordInput, revealConfirmPwEye));
 }
 
-submitBox.addEventListener('click', () => {
+submitBox.addEventListener('click', async () => {
 
     const storedUsers = JSON.parse(localStorage.getItem('usersInfo') || '[]');
 

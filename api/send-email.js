@@ -65,21 +65,3 @@ module.exports = async function handler(req, res){
 };
 
 
-// export default async (req: NextApiRequest, res: NextApiResponse) => {
-//   try { // Added try...catch for better error handling
-//     const { data, error } = await resend.emails.send({
-//       from: 'Your Name <you@yourverifieddomain.com>',
-//       to: ['delivered@resend.dev'],
-//       subject: 'Hello world',
-//       react: EmailTemplate({ firstName: 'John' }),
-//     });
-//
-//     if (error) {
-//       return res.status(400).json(error);
-//     }
-//
-//     res.status(200).json(data);
-//   } catch (e) {
-//      res.status(500).json({ error: 'Internal Server Error' });
-//   }
-// };
