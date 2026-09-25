@@ -2,7 +2,7 @@ const { Resend } = require("resend");
 const crypto = require("crypto");
 const { sign } = require("../lib/sign");
 
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; //regex for sanity check of email address, must include @, more text, dots
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; 
 
 module.exports = async function handler(req, res){
 
@@ -14,11 +14,7 @@ module.exports = async function handler(req, res){
         return res.status(400).json({ error: "A valid email is required" });
     }
     const code = String(crypto.randomInt(100000, 1000000)); 
-    //generate random integer synchronously or asynchronously
-    //it produces a value from 100000 through 999999 6 digits
-    //format: crypto.randomInt([min, ] max [, callback])
     const exp = Date.now() + (60 * 10 * 1000); 
-    //set expire time to be 10mins but in 600000ms format in computing terms.
     try{
         console.log(
             "RESEND KEY CHECK:",

@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
+    "google-auth-library": "^11.1.0",
     "resend": "^6.28.1"
   }
 }

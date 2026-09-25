@@ -65,11 +65,9 @@ submitBox.addEventListener('click', async () => {
     }
     
     submitBox.disabled = true;
-    setTimeout(()=>{
-        messageInfo.textContent = "Sending verification code...";
-    },2000);
-
+    
     try{
+        messageInfo.textContent = "Sending verification code...";
         const token = await requestCode(email);
         pending = {email, username, password, token};
         verifyDisplayMessage.textContent = `We sent a 6-digit code to ${email}.`;
@@ -101,13 +99,11 @@ clearLocalStorage.addEventListener('click', ()=>{
     verifyBtn.disabled = true;
     try{
         //await axios.post(url, userData) etc=axios.post("https://jsonplaceholder.typicode.com/posts", {title: "foo", body: "bar", userId: 1,})
-        // await axios.post('/api/verify-code', {email:pending.email, code, token: pending.token});
         await axios.post("/api/verify-code", {
             email: pending.email,
             code,
             token: pending.token
         });
-
 
         const storedUsers = JSON.parse(localStorage.getItem('usersInfo') || '[]');
         storedUsers.push({
@@ -162,11 +158,6 @@ document.addEventListener('keydown', (e)=>{
     }
 })
 
-// storedUsers.push({
-//     emailAddress_username: emailInput.value,
-//     user: userInput.value,
-//     password: passwordInput.value,
-// });
 // function togglePasswordVisibility(inputElement, eyeElement) {
 //     const isHidden = inputElement.type === "password";
 //     inputElement.type = isHidden ? "text" : "password";

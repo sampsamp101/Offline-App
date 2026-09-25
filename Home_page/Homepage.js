@@ -65,7 +65,6 @@ function renderProfile() {
     } else {
         profileEmail.textContent = currentEmail;
     }
-
     const profileContainer = document.getElementById("profile-container");
     openModal(profileContainer);
 }
