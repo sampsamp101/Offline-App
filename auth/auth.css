@@ -88,6 +88,9 @@ body{
     #login{
       width:fit-content;
     }
+    #create{
+        width:fit-content;
+    }
 }
 
 #alt-login-container{
@@ -99,6 +102,7 @@ body{
     background-color: lightblue;
     margin: 0 auto;      
     justify-content: center;
+    margin-top: 100px;
     align-items: center;
     padding-bottom: 20px;
 }
@@ -122,7 +126,6 @@ body{
         padding: 30px;
         width: min(400px, 80%);
         border-radius: 40px;
-
         #recovery-email-wrapper{
             display:flex;
             flex-direction: column;

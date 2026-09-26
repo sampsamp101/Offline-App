@@ -6,46 +6,20 @@
     <title>Authentication</title>
     <link rel="stylesheet" href="auth.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    
 </head>
 
 <body>
-    <header>
-        <nav id="navbar">
-            <h2 id="logo">
-                <a href="/index.html" id="logo-text">OFFLINE</a>
-            </h2>
-            <ul>
-                <li><a href="/Create_account/Create_account.html">Sign Up</a></li>
-            </ul>
-        </nav>
-    </header>    
-    <div id="auth-app"></div>
 
-    <div class="login-create-container">
-        <div id="login-Account">
-            <h2>Welcome back</h2>
-            <p id="info">Login to continue</p>
-        </div>        
-        <label for="username">
-            Username 
-            <input id="username" type="email" placeholder="Enter username..."/>
-        </label>
-        <label for="password">
-            Password Abcdef1!
-            <span id="password-eye-container">
-                <input id="password" type="password" placeholder="Enter password..."/><i class="fa-solid fa-eye" id="reveal-pw"></i>
-            </span>
-        </label>
-        <button id="login">Log in</button>        
-        <button id="recover-user">Recover User</button>
-        <button id="recover-password">Recover Password</button>
-        <span id="no-account-container">
-            <p>Don't have an account?</p>
-            <a href="/Create_account/Create_account.html">Create one</a>
-        </span>
-    </div>
-     
+    <!-- <div id="alt-login-container">
+        <p id="sign-in-google">Sign in Via:</p>
+        <div id="g_id_onload"
+            data-client_id="221366141263-bss7som7liqfcgksfe3fq1grl6v1rufn.apps.googleusercontent.com"
+            data-callback="handleCredentialResponse">
+        </div>
+        <div class="g_id_signin" data-type="standard"></div>
+    </div> -->
+
+    <div id="auth-app"></div>
     
     <div id="forgot-user-modal" class="modal-overlay">
             <div class="modal-box">
@@ -75,40 +49,6 @@
             </div>
     </div>
     
-
-
-
-<!-- <div class="login-create-container">
-        <div id="login-Account">
-            <h2>Welcome</h2>
-            <p id="info">Sign up to continue</p>
-        </div>       
-        <label for="email">
-            Email 
-            <input id="email" type="email" placeholder="Enter Email Address..."/>
-        </label>
-        <label for="user">
-            UserName
-            <input id="user" type="text" placeholder="Enter New User..."/>
-        </label>
-        <label for="password">
-            Password Abcdef1!
-            <span id="password-eye-container">
-                <input id="password" type="password" placeholder="Password" />
-                <i class="fa-solid fa-eye" id="reveal-pw"></i>
-            </span>
-        </label>
-        <label for="confirm-password">
-            Confirm Password
-            <span id="confirm-password-eye-container">
-                <input id="confirm-password" type="password" placeholder="Confirm Password" />
-                <i class="fa-solid fa-eye" id="reveal-confirm-pw"></i>
-            </span>
-        </label>
-        <button id="login">Create Account</button>
-        <button id="clearUsers">Clear local storage</button>
-    </div>
-
     <div id="modal-popup-email-verification" class="modal-overlay">
         <div class="modal-box">
             <button id="closeBtn" class="modal-close">&times;</button>
@@ -120,16 +60,7 @@
             <button id="resend-btn">Resend code</button>
             <p id="verify-msg"></p>
         </div>
-    </div> -->
-
-    <div id="alt-login-container">
-        <p id="sign-in-google">Or Sign in Via:</p>
-        <div id="g_id_onload"
-            data-client_id="221366141263-bss7som7liqfcgksfe3fq1grl6v1rufn.apps.googleusercontent.com"
-            data-callback="handleCredentialResponse">
-        </div>
-        <div class="g_id_signin" data-type="standard"></div>
-    </div>
+    </div> 
 
     <footer>
             <h3>© 2026 Offline</h3>
@@ -152,7 +83,9 @@
             </div>
     </footer>
     
-    
+    <script src="https://cdn.jsdelivr.net/npm/axios@1/dist/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.2/axios.min.js"></script>
+
     <script src="auth.js"></script>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
 </body>
