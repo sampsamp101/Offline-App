@@ -2,10 +2,7 @@ const authMainApp = document.getElementById("auth-app");
 
 const forgotUserModal = document.getElementById("forgot-user-modal");
 const forgotPasswordModal = document.getElementById("forgot-password-modal");
-
-
 let pending = null;   // { email, username, password, token }
-
 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/;
 
@@ -246,7 +243,7 @@ function renderCreate(){
         <button id="create">Create Account</button>
         <button id="clearUsers">Clear local storage</button>
     </div>`;
-    
+
     const emailInput = document.getElementById("email");
     const userInput = document.getElementById("user");
     const passwordInput = document.getElementById("password");
@@ -392,7 +389,7 @@ function renderCreate(){
 }   
 
 function handleCredentialResponse(response) {
-    axios.post("/api/auth/google", {
+    axios.post("/api/Auth/google", {
         credential: response.credential
     })
     .then(({ data }) => {

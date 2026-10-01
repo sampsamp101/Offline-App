@@ -7,13 +7,13 @@ export default async function handler(req, res){
     if (req.method !== "POST"){
         return res.status(405).json({error: "Method not allowed"});
     }
-    const {credentials} = req.body || {};
-    if (!credentials){
+    const {credential} = req.body || {};
+    if (!credential){
         return res.status(400).json({error: "Missing credentials!"});
     }
     try{
         const ticket = await client.verifyIdToken({
-            idToken: credentials,
+            idToken: credential,
             audience: CLIENT_ID,
         });
         const payload = ticket.getPayload();

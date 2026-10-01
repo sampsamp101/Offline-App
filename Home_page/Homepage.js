@@ -112,6 +112,7 @@ function renderContacts(){
     }
     const userContactListArr = contactsByUser[currentUser] || [];
     const mainGlobalModal = document.getElementById("global-modal-root");
+
     mainGlobalModal.innerHTML = `<div id="contacts-container" class="modal-overlay show">
             <div id="modal-box-contacts">
                 <button class="modal-close-btn">&times</button>
@@ -130,11 +131,14 @@ function renderContacts(){
                     <p id="swipe-add-contacts">Swipe down to add contacts</p>
             </div>
         </div>`;
+
     const addContacts = document.getElementById("add");
     const contactWrapperCurrent = document.getElementById("contacts-wrapper");
+
     for (const name of userContactListArr){
+      let count = 0;
       contactWrapperCurrent.innerHTML +=
-      `<div class="contacts-message-wrapper message-btn delete-btn" data-msg-user="${name}"><img id="image-contacts"src="/Images/profile-icon-design-free-vector.jpg"/><p class="contacts-name">${name}</p></div>`;
+      `<div class="contacts-message-wrapper message-btn delete-btn" data-msg-user="${name}" dataset-user-id="${count}"><img id="image-contacts"src="/Images/profile-icon-design-free-vector.jpg"/><p class="contacts-name">${name}</p></div>`;
     }
     const paraWarning = document.getElementById("warning-msg");
     const userAdd = document.getElementById("search-function");
@@ -265,14 +269,12 @@ function globalModal(){
         if (closeButton){
            navigateModal(null);
         }
-        
         const logoutConfirm = e.target.closest("#logout-confirm");
         if (logoutConfirm){
             localStorage.removeItem("currentUser");
             window.location.href = "/login_account/login-account.html";
             return;
         }
-
         const contactRow = e.target.closest(".message-btn[data-msg-user]");
         if (contactRow){
             appState.chatWith = contactRow.dataset.msgUser;
@@ -315,8 +317,7 @@ function renderChat() {
                         </button>
                     </div>
                 </div>
-            </div>
-    `;
+            </div>`;
 
     document.getElementById("chat-with").textContent = appState.chatWith;
     renderMessages();
@@ -336,7 +337,6 @@ function renderMessages() {
 
     const currentUser = localStorage.getItem("currentUser") || "Guest";
     const chatWith = appState.chatWith;
-
     const mine = JSON.parse(localStorage.getItem(`Msg:${currentUser}:${chatWith}`) || "[]")
         .map(m => ({ ...m, mine: true }));
     const theirs = JSON.parse(localStorage.getItem(`Msg:${chatWith}:${currentUser}`) || "[]")
@@ -358,7 +358,6 @@ function renderMessages() {
         html += `<p class="chat-bubble ${side}">${m.message}</p><p class="chat-time ${side}">${time}</p>`;
         return html;
     }).join("");
-
     wrapper.scrollTop = wrapper.scrollHeight;
 }
 
@@ -418,104 +417,185 @@ document.getElementById("clear-localStorage").addEventListener("click", () => {
     renderMain();
 });
 
+function setupSwipeActions(){
+    const rows = document.querySelectorAll(".swipe-row");
+    
+    rows.forEach(row=>{
+        const message = row.querySelector(".contacts-messages-container");
 
+        let startX = 0;
+        let currentY = 0;
+        let drag = false;
+        
+        message.addEventListener('pointerdown', (e)=>{
+            drag = true;
+            startX = e.startX;
+            startY = e.startY;
+
+            message.style.transition = "none";
+            message.setPointerCapture(e.pointerId);
+        });
+
+        message.addEventListener('pointermove', (e)=>{
+            if (!dragging) return;
+            
+            currentX = e.clientX;
+
+            const distance = currentX - startX;
+            
+            const limitedDistance = Math.max(-100, Math.min(100, distance));
+
+            message.style.transform = translateX(`${limitedDistance}`);
+        });
+
+        message.addEventListener("pointerup", (e)=>{
+            if (!dragging)return;
+
+            const distance = currentX -startX;
+
+            message.style.transition = "transform 0.2s ease";
+
+            if (distance < -60){
+                archiveMessage(row);
+            }
+            else if (distance > 60){
+                deleteMessage(row)
+            }
+            else{
+                message.style.transform = "translateX(0)";
+            }
+        });
+
+        message.addEventListener("pointercancel", ()=>{
+            dragging = false;
+            message.style.transition = "transform 0.2 ease";
+            message.style.transform = "translateX(0)";
+
+        });
+    })
+}
+
+
+
+function setupSwipeDivider() {
+    const container = document.getElementById("swipe-container");
+    const chatPanel = document.getElementById("chat-panel");
+    const divider = document.getElementById("swipe-divider");
+
+    if (!container || !chatPanel || !divider) return;
+
+    let dragging = false;
+
+    function setChatWidth(percent) {
+        percent = Math.max(20, Math.min(100, percent));
+        chatPanel.style.flexBasis = percent + "%";
+    }
+
+    function positionFromClientX(clientX) {
+        const rect = container.getBoundingClientRect();
+
+        return ((clientX - rect.left) / rect.width) * 100;
+    }
+
+    divider.addEventListener("mousedown", () => {
+        dragging = true;
+    });
+    
+
+    window.addEventListener("mouseup", () => {
+        dragging = false;
+    });
+
+    window.addEventListener("mousemove", (e) => {
+        if (!dragging) return;
+
+        const percent = positionFromClientX(e.clientX);
+        setChatWidth(percent);
+    });
+
+    divider.addEventListener("touchstart", () => {
+        dragging = true;
+    });
+
+    window.addEventListener("touchend", () => {
+        dragging = false;
+    });
+
+    window.addEventListener("touchmove", (e) => {
+        if (!dragging) return;
+
+        const percent = positionFromClientX(e.touches[0].clientX);
+        setChatWidth(percent);
+    });
+}
 function renderPreview() {
     const mainApp = document.getElementById("main-app");
     mainApp.innerHTML = `
-        <div class="outer-container">
-            <div class="inner-container">
-                <div id="preview-message-wrapper"></div>
+    <div class="outer-container">
+        <div class="inner-container">
+            <div class="swipe-container" id="swipe-container">
+                <div class="swipe-panel chat-panel" id="chat-panel">
+                    <div id="preview-message-wrapper"></div>
+                </div>
+                <div class="swipe-divider" id="swipe-divider"></div>
+                <div class="swipe-panel widgets-panel">
+                    <div id="side-widget-panel"></div>
+                </div>
             </div>
         </div>
-    `;
+    </div>`;
 
-const messageHistory =
-        document.getElementById("preview-message-wrapper");
+    setupSwipeDivider();
 
+    const messageHistory = document.getElementById("preview-message-wrapper");
     if (!messageHistory) return;
 
     messageHistory.innerHTML = "";
 
-    const currentUser =
-        localStorage.getItem("currentUser") || "Guest";
-
-    let contactsByUser =
-        JSON.parse(localStorage.getItem("contactsByUser") || "{}");
-
-    if (
-        Array.isArray(contactsByUser) ||
-        typeof contactsByUser !== "object" ||
-        contactsByUser === null
-    ) {
+    const currentUser = localStorage.getItem("currentUser") || "Guest";
+    let contactsByUser = JSON.parse(localStorage.getItem("contactsByUser") || "{}");
+    if (Array.isArray(contactsByUser) || typeof contactsByUser !== "object" || contactsByUser === null) {
         contactsByUser = {};
     }
-
-    const userContactListArr =
-        contactsByUser[currentUser] || [];
+    const userContactListArr = contactsByUser[currentUser] || [];
 
     for (const contactName of userContactListArr) {
-
-        const storageKey =
-            `Msg:${currentUser}:${contactName}`;
-
-        const receivingMessageKey =
-            `Msg:${contactName}:${currentUser}`;
-
-        const storedMsg =
-            JSON.parse(localStorage.getItem(storageKey) || "[]");
-
-        const receivingMsg =
-            JSON.parse(
-                localStorage.getItem(receivingMessageKey) || "[]"
-            );
-
-        const msgArray = [
-            ...storedMsg,
-            ...receivingMsg
-        ];
-
-        msgArray.sort(
-            (a, b) => a.createdAt - b.createdAt
-        );
-
-        const lastMessage =
-            msgArray.at(-1);
-
+        const storageKey = `Msg:${currentUser}:${contactName}`;
+        const receivingMessageKey = `Msg:${contactName}:${currentUser}`;
+        const storedMsg = JSON.parse(localStorage.getItem(storageKey) || "[]");
+        const receivingMsg = JSON.parse(localStorage.getItem(receivingMessageKey) || "[]");
+        const msgArray = [...storedMsg, ...receivingMsg];
+        msgArray.sort((a, b) => a.createdAt - b.createdAt);
+        const lastMessage = msgArray.at(-1);
         if (!lastMessage) continue;
 
-        const date =
-            new Date(lastMessage.createdAt);
-
-        const hours =
-            String(date.getHours()).padStart(2, "0");
-
-        const minutes =
-            String(date.getMinutes()).padStart(2, "0");
-
-        const seconds =
-            String(date.getSeconds()).padStart(2, "0");
+        const date = new Date(lastMessage.createdAt);
+        const hours = String(date.getHours()).padStart(2, "0");
+        const minutes = String(date.getMinutes()).padStart(2, "0");
+        const seconds = String(date.getSeconds()).padStart(2, "0");
 
         messageHistory.innerHTML += `
-            <div
-                class="contacts-messages-container preview-message"
-                data-preview-user="${contactName}"
-            >
-                <div class="message-container">
-                    <p>${hours}:${minutes}:${seconds}</p>
-
-                    <span id="name-message-container">
-                        <p>${contactName}:</p>
-                        <p>${lastMessage.message}</p>
-                    </span>
-                </div>
-                <button
-                    class="msg delete-btn"
-                    data-user="${contactName}"
-                >
+            <div class="swipe-row">
+                <div class="swipe-action delete-action">
                     Delete
-                </button>
+                </div>
+                <div class="swipe action archive-action">
+                    Archive
+                </div>
+
+                <div class="contacts-messages-container preview-message" data-preview-user="${contactName}">
+                    <div class="message-container">
+                        <p>${hours}:${minutes}:${seconds}</p>
+                        <span id="name-message-container">
+                            <p>${contactName}:</p>
+                            <p>${lastMessage.message}</p>
+                        </span>
+                    </div>
+                    <button class="msg delete-btn" data-user="${contactName}">Delete</button>
+                </div>
             </div>
-            <hr/>
+
+            <hr class="preview-divider"/>
         `;
     }
 }
@@ -551,4 +631,3 @@ function renderMain() {
     }
 }
 renderMain();
-
