@@ -6,36 +6,35 @@ const appState = {
 
 const mainApp = document.getElementById("main-app");
 if (!mainApp) {
-    console.error("Fatal: #main-app not found in the DOM. Check Homepage.html.");
+    throw new Error("Fatal: #main-app not found in the DOM. Check Homepage.html.");
 }
 
 function openModal(modal) {
-    const profileContainer = document.getElementById("profile-container");
-    const settingsContainer = document.getElementById("settings-container");
-    const contactsContainer = document.getElementById("contacts-container");
-    const logoutContainer = document.getElementById("logout-container");
-    if (profileContainer){
-        profileContainer.classList.remove("show");
-    }
-    if (settingsContainer){
-        settingsContainer.classList.remove("show");
-    }
-    if (contactsContainer){
-        contactsContainer.classList.remove("show");
-    }
-    if (logoutContainer){
-        logoutContainer.classList.remove("show");
-    }
+    document.querySelectorAll(".modal-overlay").forEach((m) => m.classList.remove("show"));
     void modal.offsetWidth; 
     modal.classList.add("show");
 }
+
+
+const userName = (u) => u.name ?? u.user ?? "";
+
+const getCurrentUser = () => localStorage.getItem("currentUser") || "Guest";
+
+function readJSON(key, fallback) {
+  try {
+    const v = JSON.parse(localStorage.getItem(key));
+    return v ?? fallback;
+  } 
+  catch {return fallback;}
+}
+
 
 function renderProfile() {
     const mainGlobalModal = document.getElementById("global-modal-root");
     mainGlobalModal.innerHTML = ` 
         <div id="profile-container" class="modal-overlay">
              <div id="modal-box-profile">
-                <button class="modal-close-btn">&times</button>
+                <button class="modal-close-btn">&times;</button>
                 <div id="modal-profile-picture-container">
                     <img id="image-profile" src="/Images/profile-icon-design-free-vector.jpg"/>
                 </div>
@@ -46,6 +45,7 @@ function renderProfile() {
                 </div>
              </div>
         </div>`;
+ 
 
     const currentUser = localStorage.getItem("currentUser") || "Guest";
     const profileName = document.getElementById("profile-name");
@@ -65,8 +65,8 @@ function renderProfile() {
     } else {
         profileEmail.textContent = currentEmail;
     }
-    const profileContainer = document.getElementById("profile-container");
-    openModal(profileContainer);
+
+    openModal(document.getElementById("profile-container"));
 }
 
 function renderSettings(){
@@ -92,8 +92,7 @@ function renderSettings(){
               </label>
             </div>
       </div>`;
-    const settingsContainer = document.getElementById("settings-container");
-    openModal(settingsContainer); 
+    openModal(document.getElementById("settings-container")); 
 }
 
 function renderContact(name) {
@@ -103,16 +102,18 @@ function renderContact(name) {
 }
 
 function renderContacts(){
-    const currentUser = localStorage.getItem("currentUser") || "Guest";
-    const userList =
-        JSON.parse(localStorage.getItem("usersInfo") || "[]");
+    const currentUser = getCurrentUser();
+    const userList = readJSON("usersInfo", []);
+
     let contactsByUser = JSON.parse(localStorage.getItem("contactsByUser") || "{}");
+    
     if (Array.isArray(contactsByUser) || typeof contactsByUser !== "object" || contactsByUser === null) {
       contactsByUser = {};
     }
-    const userContactListArr = contactsByUser[currentUser] || [];
-    const mainGlobalModal = document.getElementById("global-modal-root");
 
+    const userContactListArr = contactsByUser[currentUser] || [];
+
+    const mainGlobalModal = document.getElementById("global-modal-root");
     mainGlobalModal.innerHTML = `<div id="contacts-container" class="modal-overlay show">
             <div id="modal-box-contacts">
                 <button class="modal-close-btn">&times</button>
@@ -131,69 +132,57 @@ function renderContacts(){
                     <p id="swipe-add-contacts">Swipe down to add contacts</p>
             </div>
         </div>`;
-
+    
     const addContacts = document.getElementById("add");
-    const contactWrapperCurrent = document.getElementById("contacts-wrapper");
 
+    const contactWrapperCurrent = document.getElementById("contacts-wrapper");
     for (const name of userContactListArr){
       let count = 0;
       contactWrapperCurrent.innerHTML +=
       `<div class="contacts-message-wrapper message-btn delete-btn" data-msg-user="${name}" dataset-user-id="${count}"><img id="image-contacts"src="/Images/profile-icon-design-free-vector.jpg"/><p class="contacts-name">${name}</p></div>`;
       count++;
     }
+
     const paraWarning = document.getElementById("warning-msg");
     const userAdd = document.getElementById("search-function");
 
     addContacts.addEventListener('click', () => {
-      const typed = userAdd.value.trim().toLowerCase();
-      if (typed === "") {
-        paraWarning.textContent = "Type in user to add to your contact list!";
-        return;
-      }
-      else if (typed === currentUser.toLowerCase()) {
-        paraWarning.textContent = "You can't add yourself to the contact list";
-        return;
-      }
-      else {
+        const typed = userAdd.value.trim().toLowerCase();
+        if (typed === "") {
+            paraWarning.textContent = "Type in user to add to your contact list!";
+            return;
+        }
+        if (typed === currentUser.toLowerCase()) {
+            paraWarning.textContent = "You can't add yourself to the contact list";
+            return;
+        }
+
         const currentUserContactsNetwork = contactsByUser[currentUser] || [];
         if (currentUserContactsNetwork.some(user => typed === user.toLowerCase())) {
-          paraWarning.textContent = `${userAdd.value} is already in your contact list!`;
-          return;
-        }
-        for (const userRegisteredObj of userList) {
-          if (userRegisteredObj.user.toLowerCase() === typed) {
-            currentUserContactsNetwork.push(userRegisteredObj.user);
-            contactsByUser[currentUser] = currentUserContactsNetwork;
-            localStorage.setItem('contactsByUser', JSON.stringify(contactsByUser));
-            paraWarning.textContent = `${userRegisteredObj.user} added to your contact list!`;
-            renderContact(userRegisteredObj.user);
+            paraWarning.textContent = `${userAdd.value} is already in your contact list!`;
             return;
-          }
         }
-        paraWarning.textContent = `The user is not registered!`;
-        return;
-      }
-    });
-    const contactsContainer = document.getElementById("contacts-container");
-    openModal(contactsContainer);
-}
 
-// function renderLogout(){
-//     const mainGlobalModal = document.getElementById("global-modal-root");
-//     mainGlobalModal.innerHTML = `<div id="logout-container" class="modal-overlay show">
-//             <div id="modal-box-logout">
-//                 <label for="logout-confirm">
-//                     Logout? 
-//                     <span id="logout-yes-no-container">
-//                         <button id="logout-confirm">yes</button>
-//                         <button id="logout-no" class="modal-close-btn">no</button>
-//                     </span>
-//                 </label>
-//             </div>
-//         </div>`;
-//     const logoutContainer = document.getElementById("logout-container");
-//     openModal(logoutContainer); 
-// }
+        const userExists = userList.find((user)=> userName(user).toLowerCase() === typed);
+        if (!userExists){
+            paraWarning.textContent = `The user is not registered!`;
+            return;
+        }
+    
+        for (const userRegisteredObj of userList) {
+            if (userRegisteredObj.user.toLowerCase() === typed) {
+                currentUserContactsNetwork.push(userRegisteredObj.user);
+                contactsByUser[currentUser] = currentUserContactsNetwork;
+                localStorage.setItem('contactsByUser', JSON.stringify(contactsByUser));
+
+                paraWarning.textContent = `${userRegisteredObj.user} added to your contact list!`;
+                renderContact(userRegisteredObj.user);
+                return;
+            }
+        }
+    });
+    openModal(document.getElementById("contacts-container"));
+}
 
 function renderLogout(){
     const mainGlobalModal = document.getElementById("global-modal-root");
@@ -210,24 +199,15 @@ function renderLogout(){
 }
 
 
-function renderModal(){
-    const root = document.getElementById("global-modal-root");
-    if (appState.currentModal === null) {
-        root.innerHTML = "";
-        return;
-    }
-    if (appState.currentModal === "profile") {
-        renderProfile();
-    }
-    else if (appState.currentModal === "settings") {
-        renderSettings();
-    }
-    else if (appState.currentModal === "contacts") {
-        renderContacts();
-    }
-    else if (appState.currentModal === "logout") {
-        renderLogout();
-    }
+function renderModal() {
+  const root = document.getElementById("global-modal-root");
+  switch (appState.currentModal) {
+    case null:       root.innerHTML = ""; break;
+    case "profile":  renderProfile(); break;
+    case "settings": renderSettings(); break;
+    case "contacts": renderContacts(); break;
+    case "logout":   renderLogout(); break;
+  }
 }
 
 function navigateModal(modal){
@@ -258,33 +238,20 @@ navbarNavigate.addEventListener('click', (event)=>{
 });
 
 function globalModal(){
-     const profileButton = document.getElementById("profile");
-    const settingsButton = document.getElementById("settings");
-    const contactsButton = document.getElementById("contacts");
-    const logoutButton = document.getElementById("logout");
-    profileButton.addEventListener("click", () => {
-      navigateModal("profile");
-    });
-    settingsButton.addEventListener("click", () => {
-       navigateModal("settings");
-    });
-    contactsButton.addEventListener("click", () => {
-        navigateModal("contacts");
-    });
-    logoutButton.addEventListener("click", () => {
-        navigateModal("logout");
-    });
+    document.getElementById("profile").addEventListener("click", () => navigateModal("profile"));
+    document.getElementById("settings").addEventListener("click", () => navigateModal("settings"));
+    document.getElementById("contacts").addEventListener("click", () => navigateModal("contacts"));
+    document.getElementById("logout").addEventListener("click", () => navigateModal("logout"));
+
     const mainGlobalModal = document.getElementById("global-modal-root");
     mainGlobalModal.addEventListener('click', (e)=>{
-        const closeButton = e.target.closest(".modal-close-btn");
-        if (closeButton){
+        if (e.target.closest(".modal-close-btn")){
            navigateModal(null);
+           return;
         }
-        const logoutConfirm = e.target.closest("#logout-confirm");
-        if (logoutConfirm){
+        if (e.target.closest("#logout-confirm")){
             localStorage.removeItem("currentUser");
-            window.location.href = "/login_account/login-account.html";
-            return;
+            window.location.href = "http://localhost:3000/index.html";
         }
         const contactRow = e.target.closest(".message-btn[data-msg-user]");
         if (contactRow){
@@ -294,8 +261,9 @@ function globalModal(){
         }
     })
 }
-
 globalModal();
+
+
 function renderChat() {
     const mainApp = document.getElementById("main-app");
     mainApp.innerHTML = `
