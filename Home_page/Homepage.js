@@ -139,6 +139,7 @@ function renderContacts(){
       let count = 0;
       contactWrapperCurrent.innerHTML +=
       `<div class="contacts-message-wrapper message-btn delete-btn" data-msg-user="${name}" dataset-user-id="${count}"><img id="image-contacts"src="/Images/profile-icon-design-free-vector.jpg"/><p class="contacts-name">${name}</p></div>`;
+      count++;
     }
     const paraWarning = document.getElementById("warning-msg");
     const userAdd = document.getElementById("search-function");
@@ -177,22 +178,37 @@ function renderContacts(){
     openModal(contactsContainer);
 }
 
+// function renderLogout(){
+//     const mainGlobalModal = document.getElementById("global-modal-root");
+//     mainGlobalModal.innerHTML = `<div id="logout-container" class="modal-overlay show">
+//             <div id="modal-box-logout">
+//                 <label for="logout-confirm">
+//                     Logout? 
+//                     <span id="logout-yes-no-container">
+//                         <button id="logout-confirm">yes</button>
+//                         <button id="logout-no" class="modal-close-btn">no</button>
+//                     </span>
+//                 </label>
+//             </div>
+//         </div>`;
+//     const logoutContainer = document.getElementById("logout-container");
+//     openModal(logoutContainer); 
+// }
+
 function renderLogout(){
     const mainGlobalModal = document.getElementById("global-modal-root");
     mainGlobalModal.innerHTML = `<div id="logout-container" class="modal-overlay show">
             <div id="modal-box-logout">
-                <label for="logout-confirm">
-                    Logout? 
-                    <span id="logout-yes-no-container">
-                        <button id="logout-confirm">yes</button>
-                        <button id="logout-no" class="modal-close-btn">no</button>
-                    </span>
-                </label>
+                <p id="logout-text">Logout?</p>
+                <span id="logout-yes-no-container">
+                    <button id="logout-confirm">yes</button>
+                    <button id="logout-no" class="modal-close-btn">no</button>
+                </span>
             </div>
         </div>`;
-    const logoutContainer = document.getElementById("logout-container");
-    openModal(logoutContainer); 
+    openModal(document.getElementById("logout-container"));
 }
+
 
 function renderModal(){
     const root = document.getElementById("global-modal-root");
@@ -246,23 +262,18 @@ function globalModal(){
     const settingsButton = document.getElementById("settings");
     const contactsButton = document.getElementById("contacts");
     const logoutButton = document.getElementById("logout");
-
     profileButton.addEventListener("click", () => {
       navigateModal("profile");
     });
-
     settingsButton.addEventListener("click", () => {
        navigateModal("settings");
     });
-
     contactsButton.addEventListener("click", () => {
         navigateModal("contacts");
     });
-
     logoutButton.addEventListener("click", () => {
         navigateModal("logout");
     });
-
     const mainGlobalModal = document.getElementById("global-modal-root");
     mainGlobalModal.addEventListener('click', (e)=>{
         const closeButton = e.target.closest(".modal-close-btn");
@@ -318,7 +329,6 @@ function renderChat() {
                     </div>
                 </div>
             </div>`;
-
     document.getElementById("chat-with").textContent = appState.chatWith;
     renderMessages();
     setupChatEvents();
@@ -334,7 +344,6 @@ function formatDate(timestamp) {
 function renderMessages() {
     const wrapper = document.getElementById("message-wrapper");
     if (!wrapper) return;
-
     const currentUser = localStorage.getItem("currentUser") || "Guest";
     const chatWith = appState.chatWith;
     const mine = JSON.parse(localStorage.getItem(`Msg:${currentUser}:${chatWith}`) || "[]")
@@ -375,7 +384,6 @@ function sendMessage() {
     const nextOrder = arr.length ? arr[arr.length - 1].order + 1 : 1;
     arr.push({ order: nextOrder, message: text, createdAt: Date.now() });
     localStorage.setItem(key, JSON.stringify(arr));
-
     input.value = "";
     renderMessages();
 }
@@ -419,42 +427,29 @@ document.getElementById("clear-localStorage").addEventListener("click", () => {
 
 function setupSwipeActions(){
     const rows = document.querySelectorAll(".swipe-row");
-    
     rows.forEach(row=>{
         const message = row.querySelector(".contacts-messages-container");
-
         let startX = 0;
         let currentY = 0;
         let drag = false;
-        
         message.addEventListener('pointerdown', (e)=>{
             drag = true;
             startX = e.startX;
             startY = e.startY;
-
             message.style.transition = "none";
             message.setPointerCapture(e.pointerId);
         });
-
         message.addEventListener('pointermove', (e)=>{
             if (!dragging) return;
-            
             currentX = e.clientX;
-
             const distance = currentX - startX;
-            
             const limitedDistance = Math.max(-100, Math.min(100, distance));
-
             message.style.transform = translateX(`${limitedDistance}`);
         });
-
         message.addEventListener("pointerup", (e)=>{
             if (!dragging)return;
-
             const distance = currentX -startX;
-
             message.style.transition = "transform 0.2s ease";
-
             if (distance < -60){
                 archiveMessage(row);
             }
@@ -465,17 +460,13 @@ function setupSwipeActions(){
                 message.style.transform = "translateX(0)";
             }
         });
-
         message.addEventListener("pointercancel", ()=>{
             dragging = false;
             message.style.transition = "transform 0.2 ease";
             message.style.transform = "translateX(0)";
-
         });
     })
 }
-
-
 
 function setupSwipeDivider() {
     const container = document.getElementById("swipe-container");
@@ -493,7 +484,6 @@ function setupSwipeDivider() {
 
     function positionFromClientX(clientX) {
         const rect = container.getBoundingClientRect();
-
         return ((clientX - rect.left) / rect.width) * 100;
     }
 
@@ -501,14 +491,12 @@ function setupSwipeDivider() {
         dragging = true;
     });
     
-
     window.addEventListener("mouseup", () => {
         dragging = false;
     });
 
     window.addEventListener("mousemove", (e) => {
         if (!dragging) return;
-
         const percent = positionFromClientX(e.clientX);
         setChatWidth(percent);
     });
@@ -573,16 +561,14 @@ function renderPreview() {
         const hours = String(date.getHours()).padStart(2, "0");
         const minutes = String(date.getMinutes()).padStart(2, "0");
         const seconds = String(date.getSeconds()).padStart(2, "0");
-
+                // <div class="swipe-action delete-action">
+                //     Delete
+                // </div>
+                // <div class="swipe action archive-action">
+                //     Archive
+                // </div>
         messageHistory.innerHTML += `
             <div class="swipe-row">
-                <div class="swipe-action delete-action">
-                    Delete
-                </div>
-                <div class="swipe action archive-action">
-                    Archive
-                </div>
-
                 <div class="contacts-messages-container preview-message" data-preview-user="${contactName}">
                     <div class="message-container">
                         <p>${hours}:${minutes}:${seconds}</p>
@@ -594,7 +580,6 @@ function renderPreview() {
                     <button class="msg delete-btn" data-user="${contactName}">Delete</button>
                 </div>
             </div>
-
             <hr class="preview-divider"/>
         `;
     }

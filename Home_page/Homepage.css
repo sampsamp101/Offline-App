@@ -7,7 +7,18 @@
 html, body {
     width: 100%;
     height: 100%;
-    overflow: hidden;   /* prevents any accidental scrollbar from appearing */
+    overflow: hidden;   
+}
+
+.button{
+    font-size:15px;
+    padding:10px;
+    border: 5px solid black;
+    border-radius:20px;
+    width: fit-content;
+}
+.button:hover{
+    background-color: yellow;
 }
 
 #navbar{
@@ -98,18 +109,6 @@ html, body {
         width: 90%;
         margin: 5px auto;
     }
-    .button{
-            font-size:15px;
-
-            padding:10px;
-            border: 5px solid black;
-            border-radius:20px;
-            width: fit-content;
-            flex-wrap:1;
-        }
-    .button:hover{
-        background-color: yellow;
-    }
     .contacts-messages-container{
         display:flex;
         justify-content: space-between;
@@ -130,22 +129,18 @@ html, body {
     }
 }
 
-@keyframes bounce{
-            0%{
-                transform: translateY(0px);
-            }
-            25%{
-                transform: translateY(-40px);
-            }
-            50%{
-                transform: translateY(0px);
-            }
-            75%{
-                transform: translateY(40px);
-            }
-            100%{
-                transform: translateY(0px);
-            }
+.outer-container,
+.swipe-container {
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+@keyframes bounce {
+  0%   { transform: translateY(0); }
+  25%  { transform: translateY(-40px); }
+  50%  { transform: translateY(0); }
+  75%  { transform: translateY(40px); }
+  100% { transform: translateY(0); }
 }
 
 #modal-box-contacts{
@@ -169,6 +164,7 @@ html, body {
                 padding: 16px 8px;
                 border-radius: 20px;
                 padding-left: 40px;
+                
                 #image-contacts{
                         width: 50px;
                         height: 50px;
@@ -179,9 +175,7 @@ html, body {
                     font-size: 32px;
                 }
             }
-            .contacts-message-wrapper:hover{
-                background-color: yellowgreen;
-            }
+            .contacts-message-wrapper:hover{ background-color: yellowgreen;}
         }
         #current-contacts-wrapper{
             display:flex;
@@ -195,17 +189,6 @@ html, body {
                 flex-direction: column;
                 align-items: center;
                 max-width:200px;
-            }
-            .button{
-                font-size:15px;
-                padding:10px;
-                border: 5px solid black;
-                border-radius:20px;
-                width: fit-content;
-                flex-wrap:1;
-            }
-            .button:hover{
-                background-color: yellow;
             }
         }
         #warning-msg{
@@ -222,24 +205,16 @@ html, body {
     align-self: center;   
     margin-top: auto;       
     font-size: 400px;
-    animation-name: bounce;
-    animation-duration: 2.5s;
-    animation-timing-function: ease-in-out;
-    animation-iteration-count: infinite;
+    animation: bounce 2.5s ease-in-out infinite;
 }
 
-#swipe-add-contacts{
-    align-self:center;
-    font-size: 32px;
-}
+#swipe-add-contacts { align-self: center; font-size: 32px; }
 
-#modal-profile-picture-container{
-    #image-profile{
+#modal-profile-picture-container #image-profile{
         width: 300px;
         height: 300px;
         border: 2px solid black;
         border-radius: 60%;
-    }
 }
 
 .profile-wrapper{
@@ -253,18 +228,6 @@ html, body {
         text-underline-offset: 6px;      
         text-decoration-thickness: 2px; 
     }
-}
-
-#settings-wrapper{
-    display:flex;
-    flex-direction: column;
-    width: 100vw;
-    overflow-y: auto;
-    background: white;
-    border: 5px solid black;
-    border-radius: 20px; 
-    padding: 40px;
-    position: relative;
 }
 
 .modal-overlay{
@@ -293,9 +256,7 @@ html, body {
     visibility: visible;
 }
 
-.hidden{
-    display:none;
-}
+.hidden{display:none;}
 
 #modal-box-profile,
 #modal-box-settings,
@@ -319,6 +280,7 @@ html, body {
  gap: 50px 10px;
  user-select: none;
 }
+
 #logout-container {
     position: fixed;
     top: 0;
@@ -366,12 +328,7 @@ html, body {
   gap: 30px;
   padding: 30px;
   box-sizing: border-box;
-    background: whitesmoke;
-  transform: translateX(0%);
-  transition: 
-        transform 0.4s ease,
-        opacity 0.4s ease,
-        visibility 0.4s ease;
+  background: whitesmoke;
   z-index: 101;
 
   .top-header{
@@ -390,17 +347,17 @@ html, body {
                 align-self: center;   
                 margin-top: auto;       
                 font-size: 40px;
-                background-color: none;
+                background-color: transparent;
         }
-            .name{
-                border:5px solid black;
-                border-radius:10px;
-                background-color: green;
-                padding:20px;
-                font-size: 40px;
-                margin:60px;
-            }
-   }
+        .name{
+            border:5px solid black;
+            border-radius:10px;
+            background-color: green;
+            padding:20px;
+            font-size: 40px;
+            margin:60px;
+        }
+    }
     #message-wrapper{
         display:flex;
         flex-direction: column;
@@ -427,20 +384,16 @@ html, body {
             height: 1px;
             background-color: black;
         }
-
-        .newDate::before{
-            margin-right: 12px;
-        }
-
-        .newDate::after{
-            margin-left: 12px;
-        }
+        .newDate::before { margin-right: 12px; }
+        .newDate::after  { margin-left: 12px; }
     }
+
     #message-wrapper-container{
         display:flex;
         flex-direction: row;
         gap: 30px;
         width: 100%;
+
         #input-buttons-wrapper{
             flex: 1;
             min-width: 0;
@@ -458,16 +411,7 @@ html, body {
             border-radius: 20px;
             padding: 10px 20px;
         }
-        .button{
-                font-size:32px;
-                padding:10px;
-                border: 5px solid black;
-                border-radius:20px;
-                width: fit-content;
-            }
-        .button:hover{
-            background-color: yellow;
-        }
+        .button{font-size:32px;}
     }
 }
 
@@ -490,19 +434,16 @@ html, body {
 .chat-bubble.sending,   .chat-time.sending   { align-self: flex-end; }
 .chat-bubble.receiving, .chat-time.receiving { align-self: flex-start; }
 
-
 .swipe-container{
     display: flex;
     width: 100%;
     height: 100%;
     overflow: hidden;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;           /* Firefox */
+    scrollbar-width: none;     
 }
 
 .swipe-container::-webkit-scrollbar{
-    display: none;                    /* Chrome/Safari */
+    display: none;                  
 }
 
 .swipe-panel{
@@ -543,17 +484,14 @@ html, body {
 
 
 .widgets-panel {
-    flex: 1 1 auto;
-    min-width: 0;
-
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    padding: 20px;
-
-    background: #eee;
-    border-left: 2px solid black;
-    box-sizing: border-box;
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+  background: #eee;
+  border-left: 2px solid black;
 }
 
 .widget-box{
@@ -563,11 +501,7 @@ html, body {
     background: white;
 }
 
-.swipe-row {
-    position: relative;
-    width: 100%;
-    overflow: hidden;
-}
+.swipe-row { position: relative; width: 100%; overflow: hidden;}
 
 .contacts-messages-container {
     position: relative;
@@ -579,88 +513,34 @@ html, body {
     touch-action: pan-y;
 }
 
-.swipe-action {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    width: 100px;
-
-    color: white;
-    font-weight: bold;
+@media (max-width: 480px) {
+  #navbar {
+    padding-left: 15px;
+    padding-top: 70px;
+    width: min(78vw, 160px);
+    ul { gap: 170px; margin-right: 20px; }
+    li { font-size: 1.3rem; padding: 12px 14px; }
+    li::after { margin-top: 6px; }
+  }
 }
-
-.delete-action {
-    left: 0;
-    background: red;
-}
-
-.archive-action {
-    right: 0;
-    background: gray;
-}
-
-/* Small phones */
-@media (max-width: 480px) { 
-    #navbar{
-        padding-left: 15px;
-        padding-top: 70px;
-        width: min(78vw, 160px);
-        ul{
-            gap: 170px;
-            margin-right: 20px;
-        }
-        li{
-            font-size: 1.3rem;
-            padding: 12px 14px;
-        }
-        li::after {
-            margin-top: 6px;   
-        }
-    } 
-}
-
-/* Larger phones / small tablets */
 @media (min-width: 481px) and (max-width: 768px) {
-    #navbar{
-        padding-left: 20px;
-        padding-top: 80px;
-        width: min(55vw, 180px);
-        ul{
-            gap: 190px;
-            margin-right: 25px;
-        }
-        li{
-            font-size: 1.6rem;
-            padding: 16px 18px;
-        }
-        li::after {
-            margin-top: 7px;   
-        }
-
-    } 
+  #navbar {
+    padding-left: 20px;
+    padding-top: 80px;
+    width: min(55vw, 180px);
+    ul { gap: 190px; margin-right: 25px; }
+    li { font-size: 1.6rem; padding: 16px 18px; }
+    li::after { margin-top: 7px; }
+  }
 }
-
-/* Tablets and up (laptop/desktop) */
 @media (min-width: 769px) {
-     #navbar{
-        padding-left: 20px;
-        padding-top: 80px;
-        width: clamp(220px, 20vw, 320px);
-        ul{
-            gap: 190px;
-            margin-right: 25px;
-        }
-        li{
-            font-size: 1.6rem;
-            padding: 16px 18px;
-        }
-        li::after {
-            margin-top: 7px;   
-        }
-    } 
+  #navbar {
+    padding-left: 20px;
+    padding-top: 80px;
+    width: clamp(220px, 20vw, 320px);
+    ul { gap: 190px; margin-right: 25px; }
+    li { font-size: 1.6rem; padding: 16px 18px; }
+    li::after { margin-top: 7px; }
+  }
 }
+ 
