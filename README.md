@@ -1,17 +1,35 @@
-# Offline-App
+# React + TypeScript + Vite
 
-This is an project-based learning app built for the sole purpose of automating chat application.
+This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
 
+Currently, two official plugins are available:
 
-# Offline App: Vercel + Resend demo
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
 
-1. Create a Resend account and API key. For testing with `onboarding@resend.dev`, use your Resend account's own email address as the recipient.
-2. Push this project to your GitHub repository. Do NOT commit any API key or `.env` file.
-3. In Vercel, Add New > Project > Import your GitHub repo. Set Framework Preset to **Other** and Root Directory to `./`; deploy.
-4. In Vercel Project > Settings > Environment Variables, add `RESEND_API_KEY` (your Resend API key) and `RESEND_TEST_EMAIL` (the email address on your Resend account). Apply to Production and redeploy from Deployments.
-5. Open the Vercel URL, visit `/Create_account/Create_account.html`, and create a DEMO account using invented credentials (not a real password). The demo email goes to `RESEND_TEST_EMAIL`, NOT the address typed in the form.
-6. Inspect the browser Network tab for POST `/api/send-email`; inspect Vercel function logs if it fails. Opening the HTML locally or via Live Server will not run the Vercel endpoint.
-7. For local full-stack testing, use Vercel CLI (`npm install -g vercel`, `vercel login`, `vercel link`, `vercel env pull .env.local`, `vercel dev`), then visit the local URL shown by the CLI.
+## React Compiler
 
-IMPORTANT: This is a teaching demo, NOT real email verification. The app's existing login stores plaintext passwords in localStorage and is NOT safe for real accounts. The demo endpoint is unauthenticated and lacks persistent rate limiting; do not leave it publicly accessible or use it in production without adding authentication and abuse controls. For sending to arbitrary addresses, verify your sending domain with Resend and add appropriate server-side validation, rate limiting and abuse protections. The API key must never be put in frontend JS or VITE_* variables.
+The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
 
+Note: This will impact Vite dev & build performances.
+You can also try [the experimental native React Compiler support in plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md#rust-react-compiler) by using `compiler: true` in the plugin options instead of using the Babel plugin.
+
+## Expanding the Oxlint configuration
+
+If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+
+```json
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["react", "typescript", "oxc"],
+  "options": {
+    "typeAware": true
+  },
+  "rules": {
+    "react/rules-of-hooks": "error",
+    "react/only-export-components": ["warn", { "allowConstantExport": true }]
+  }
+}
+```
+
+See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
