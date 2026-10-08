@@ -1,7 +1,7 @@
-const crypto = require("crypto");
-const { sign } = require("../lib/sign");
+import crypto from "crypto";
+import { sign } from "../lib/sign";
 
-module.exports = function handler(req, res) {
+export default function handler(req, res) {
     if (req.method !== "POST") {
         return res.status(405).json({ error: "Method not allowed" });
     }
@@ -22,4 +22,4 @@ module.exports = function handler(req, res) {
 
     if (!ok) return res.status(400).json({ error: "Incorrect code" });
     return res.status(200).json({ verified: true });
-};
+}

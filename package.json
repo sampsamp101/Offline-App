@@ -9,12 +9,14 @@
     "lint": "oxlint",
     "preview": "vite preview"
   },
+  
   "dependencies": {
     "google-auth-library": "^11.1.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "resend": "^6.32.0"
   },
+
   "devDependencies": {
     "@babel/core": "^7.29.7",
     "@rolldown/plugin-babel": "^0.2.3",
